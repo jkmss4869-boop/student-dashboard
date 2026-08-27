@@ -1,0 +1,749 @@
+<div id="vys-learning-journey">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Orbitron:wght@500;600;700;800&display=swap');
+
+#vys-learning-journey {
+  --ink: #f5f7ff;
+  --muted: #b8c1e6;
+  --paper: #070b25;
+  --card: rgba(18, 27, 74, .78);
+  --line: rgba(147, 170, 255, .22);
+  --accent: #71e6ff;
+  --accent-soft: rgba(87, 100, 255, .19);
+
+  font-family: 'Nunito', sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 80% 8%, rgba(137, 90, 255, .26), transparent 20%),
+    radial-gradient(circle at 15% 62%, rgba(0, 198, 255, .14), transparent 28%),
+    var(--paper);
+  border-radius: 28px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+#vys-learning-journey * {
+  box-sizing: border-box;
+}
+
+/* HERO */
+
+.vys-hero {
+  position: relative;
+  min-height: 430px;
+  padding: 70px 7% 60px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #050816;
+}
+
+.vys-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(90deg, rgba(4, 8, 30, .86) 0%, rgba(4, 8, 30, .58) 52%, rgba(4, 8, 30, .26) 100%);
+}
+
+.vys-hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.vys-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 850px;
+}
+
+.vys-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #aef6ff;
+  margin-bottom: 20px;
+
+  opacity: 0;
+  transform: translateY(15px);
+  animation: vysReveal .7s .1s forwards;
+}
+
+.vys-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: vysPulse 2s infinite;
+}
+
+.vys-title {
+  margin: 0;
+  font-size: clamp(42px, 7vw, 78px);
+  line-height: .98;
+  letter-spacing: -.045em;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  text-shadow: 0 0 26px rgba(125, 227, 255, .3);
+
+  opacity: 0;
+  transform: translateY(22px);
+  animation: vysReveal .8s .2s forwards;
+}
+
+.vys-title em {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  color: #aa8cff;
+}
+
+.vys-subtitle {
+  max-width: 570px;
+  margin: 25px 0 0;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--muted);
+
+  opacity: 0;
+  transform: translateY(18px);
+  animation: vysReveal .8s .4s forwards;
+}
+
+.vys-badge {
+  display: inline-block;
+  margin-top: 30px;
+  padding: 10px 15px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(10, 19, 65, .62);
+  backdrop-filter: blur(8px);
+  font-size: 12px;
+  color: #d8defc;
+
+  opacity: 0;
+  transform: translateY(15px);
+  animation: vysReveal .8s .55s forwards;
+}
+
+/* JOURNEY */
+
+.vys-section {
+  padding: 70px 7%;
+  position: relative;
+}
+
+.vys-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 30px;
+  margin-bottom: 35px;
+}
+
+.vys-section-label {
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.vys-section-title {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 44px);
+  letter-spacing: -.035em;
+  line-height: 1.1;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.vys-section-copy {
+  max-width: 380px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+/* CARDS */
+
+.vys-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.vys-card {
+  position: relative;
+  min-height: 230px;
+  padding: 28px;
+  background: linear-gradient(145deg, rgba(30, 42, 104, .88), rgba(12, 19, 58, .84));
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  overflow: hidden;
+
+  opacity: 0;
+  transform: translateY(25px);
+  transition:
+    transform .35s ease,
+    box-shadow .35s ease,
+    border-color .35s ease;
+}
+
+.vys-card.vys-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.vys-card:nth-child(2) {
+  transition-delay: .08s;
+}
+
+.vys-card:nth-child(3) {
+  transition-delay: .16s;
+}
+
+.vys-card:hover {
+  transform: translateY(-7px);
+  border-color: rgba(113, 230, 255, .7);
+  box-shadow: 0 18px 45px rgba(0, 155, 255, .2), inset 0 1px rgba(255,255,255,.12);
+}
+
+.vys-number {
+  font-size: 12px;
+  color: #aab6f2;
+  margin-bottom: 45px;
+}
+
+.vys-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, rgba(117, 226, 255, .23), rgba(130, 92, 255, .3));
+  color: var(--accent);
+  font-size: 19px;
+  margin-bottom: 18px;
+  transition: transform .35s ease;
+}
+
+.vys-card:hover .vys-icon {
+  transform: rotate(-5deg) scale(1.08);
+}
+
+.vys-card h3 {
+  margin: 0 0 9px;
+  font-size: 19px;
+  letter-spacing: -.02em;
+}
+
+.vys-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+  font-size: 13px;
+}
+
+/* PROGRESS */
+
+.vys-progress-box {
+  margin-top: 16px;
+  padding: 35px;
+  border-radius: 24px;
+  background: linear-gradient(115deg, #18256f, #44228e 58%, #8a306f);
+  border: 1px solid rgba(163, 223, 255, .3);
+  box-shadow: 0 20px 44px rgba(5, 10, 47, .3);
+  color: white;
+  overflow: hidden;
+  position: relative;
+}
+
+.vys-progress-box::after {
+  content: "";
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  right: -90px;
+  top: -100px;
+  background: rgba(255,255,255,.045);
+}
+
+.vys-progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.vys-progress-title {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -.02em;
+}
+
+.vys-progress-text {
+  font-size: 12px;
+  color: rgba(255,255,255,.58);
+  margin-top: 7px;
+}
+
+.vys-percent {
+  font-size: 34px;
+  font-weight: 600;
+}
+
+.vys-bar {
+  height: 7px;
+  margin-top: 28px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.12);
+  overflow: hidden;
+}
+
+.vys-bar-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #72efff, #a990ff, #ff8bd4);
+  box-shadow: 0 0 15px rgba(113, 230, 255, .8);
+  transition: width 1.6s cubic-bezier(.22,1,.36,1);
+}
+
+/* PATH */
+
+.vys-path {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  margin-top: 50px;
+}
+
+.vys-path-line {
+  position: absolute;
+  top: 19px;
+  left: 6%;
+  right: 6%;
+  height: 1px;
+  background: var(--line);
+}
+
+.vys-step {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  text-align: center;
+}
+
+.vys-step-dot {
+  width: 39px;
+  height: 39px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: #10194e;
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  color: var(--accent);
+  transition: all .3s ease;
+}
+
+.vys-step:hover .vys-step-dot {
+  background: linear-gradient(135deg, #71e6ff, #8669ff);
+  color: #071134;
+  border-color: var(--accent);
+  transform: scale(1.12);
+}
+
+.vys-step strong {
+  display: block;
+  font-size: 12px;
+}
+
+.vys-step span {
+  display: block;
+  margin-top: 5px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* FOOTER CTA */
+
+.vys-cta {
+  margin: 0 7% 7%;
+  padding: 42px;
+  border-radius: 25px;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(125, 239, 255, .24), transparent 24%),
+    linear-gradient(120deg, #17225f, #472282);
+  border: 1px solid rgba(165, 230, 255, .24);
+  box-shadow: 0 18px 45px rgba(3, 8, 37, .28);
+  text-align: center;
+}
+
+.vys-cta h2 {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(27px, 4vw, 40px);
+  font-weight: 500;
+}
+
+.vys-cta p {
+  margin: 12px auto 0;
+  max-width: 480px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* ANIMATIONS */
+
+@keyframes vysReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes vysPulse {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: .5; }
+}
+
+/* MOBILE */
+
+@media (max-width: 760px) {
+
+  .vys-hero {
+    min-height: 390px;
+    padding: 55px 25px;
+  }
+
+  .vys-section {
+    padding: 55px 25px;
+  }
+
+  .vys-section-head {
+    display: block;
+  }
+
+  .vys-section-copy {
+    margin-top: 15px;
+  }
+
+  .vys-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vys-card {
+    min-height: 190px;
+  }
+
+  .vys-path {
+    display: block;
+    margin-top: 35px;
+  }
+
+  .vys-path-line {
+    top: 19px;
+    bottom: 19px;
+    left: 19px;
+    right: auto;
+    width: 1px;
+    height: auto;
+  }
+
+  .vys-step {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+
+  .vys-step-dot {
+    flex-shrink: 0;
+    margin: 0 18px 0 0;
+  }
+
+  .vys-step strong {
+    font-size: 13px;
+  }
+
+  .vys-cta {
+    margin: 0 25px 25px;
+    padding: 35px 22px;
+  }
+}
+
+</style>
+
+
+<!-- HERO -->
+
+<section class="vys-hero">
+
+  <video class="vys-hero-video" autoplay muted loop playsinline aria-hidden="true">
+    <source src="background.mp4" type="video/mp4">
+  </video>
+
+  <div class="vys-hero-content">
+
+    <div class="vys-eyebrow">
+      <span class="vys-dot"></span>
+      Your personal learning space
+    </div>
+
+    <h1 class="vys-title">
+      DƯƠNG GIA <em>ĐẠT</em>
+    </h1>
+
+    <p class="vys-subtitle">
+      Welcome to your learning journey — a space where
+      lessons, practice, homework and progress come together
+      in one place.
+    </p>
+
+    <div class="vys-badge">
+      English 8 · Personalized Learning
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- JOURNEY -->
+
+<section class="vys-section">
+
+  <div class="vys-section-head">
+
+    <div>
+      <div class="vys-section-label">Your learning journey</div>
+      <h2 class="vys-section-title">
+        Everything you need,<br>
+        in one place.
+      </h2>
+    </div>
+
+    <p class="vys-section-copy">
+      Your learning space is organized around what
+      you are currently learning, practising and working toward.
+    </p>
+
+  </div>
+
+
+  <div class="vys-grid">
+
+    <article class="vys-card">
+
+      <div class="vys-number">01</div>
+
+      <div class="vys-icon">◎</div>
+
+      <h3>Know your starting point</h3>
+
+      <p>
+        Check your English assessment and understand
+        the areas we are working on together.
+      </p>
+
+    </article>
+
+
+    <article class="vys-card">
+
+      <div class="vys-number">02</div>
+
+      <div class="vys-icon">↗</div>
+
+      <h3>Practise between lessons</h3>
+
+      <p>
+        Find your homework, exercises and personalised
+        practice activities whenever you need them.
+      </p>
+
+    </article>
+
+
+    <article class="vys-card">
+
+      <div class="vys-number">03</div>
+
+      <div class="vys-icon">✦</div>
+
+      <h3>Keep moving forward</h3>
+
+      <p>
+        Follow your learning journey through each unit
+        and build your English step by step.
+      </p>
+
+    </article>
+
+  </div>
+
+
+  <!-- PROGRESS -->
+
+  <div class="vys-progress-box">
+
+    <div class="vys-progress-top">
+
+      <div>
+        <h3 class="vys-progress-title">
+          Your English journey
+        </h3>
+
+        <div class="vys-progress-text">
+          Current learning progress
+        </div>
+      </div>
+
+      <div class="vys-percent">
+        50%
+      </div>
+
+    </div>
+
+    <div class="vys-bar">
+      <div class="vys-bar-fill"></div>
+    </div>
+
+  </div>
+
+
+  <!-- PATH -->
+
+  <div class="vys-path">
+
+    <div class="vys-path-line"></div>
+
+    <div class="vys-step">
+      <div class="vys-step-dot">01</div>
+      <div>
+        <strong>Assessment</strong>
+        <span>Know your level</span>
+      </div>
+    </div>
+
+    <div class="vys-step">
+      <div class="vys-step-dot">02</div>
+      <div>
+        <strong>Lessons</strong>
+        <span>Learn together</span>
+      </div>
+    </div>
+
+    <div class="vys-step">
+      <div class="vys-step-dot">03</div>
+      <div>
+        <strong>Practice</strong>
+        <span>Build confidence</span>
+      </div>
+    </div>
+
+    <div class="vys-step">
+      <div class="vys-step-dot">04</div>
+      <div>
+        <strong>Progress</strong>
+        <span>Keep growing</span>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- CTA -->
+
+<section class="vys-cta">
+
+  <h2>
+    Keep learning. Keep growing.
+  </h2>
+
+  <p>
+    Your learning space will grow with you
+    as we move through the course.
+  </p>
+
+</section>
+
+
+<script>
+
+(function () {
+
+  const root = document.getElementById('vys-learning-journey');
+
+  if (!root) return;
+
+  const cards = root.querySelectorAll('.vys-card');
+  const progress = root.querySelector('.vys-bar-fill');
+
+  const observer = new IntersectionObserver(
+    function(entries) {
+
+      entries.forEach(function(entry) {
+
+        if (entry.isIntersecting) {
+
+          entry.target.classList.add('vys-visible');
+
+        }
+
+      });
+
+    },
+    {
+      threshold: 0.15
+    }
+  );
+
+  cards.forEach(function(card) {
+    observer.observe(card);
+  });
+
+
+  const progressObserver = new IntersectionObserver(
+    function(entries) {
+
+      if (entries[0].isIntersecting) {
+
+        setTimeout(function() {
+          progress.style.width = '50%';
+        }, 200);
+
+        progressObserver.disconnect();
+
+      }
+
+    },
+    {
+      threshold: 0.5
+    }
+  );
+
+  progressObserver.observe(progress);
+
+})();
+
+</script>
+
+</div>
