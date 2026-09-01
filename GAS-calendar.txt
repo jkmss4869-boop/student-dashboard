@@ -1,0 +1,174 @@
+const SPREADSHEET_ID = '13vj67IfJMuMEVeCI7Dj7DY5Eaf2rGkAay59fY3JhoHo';
+
+function doGet(e) {
+  const student = (e.parameter.student || '').trim();
+
+  if (!student) {
+    return jsonResponse({
+      ok: false,
+      error: 'Thiếu tham số student.'
+    });
+  }
+
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = findStudentSheet_(spreadsheet, student);
+
+  if (!sheet) {
+    return jsonResponse({
+      ok: false,
+      error: `Không tìm thấy tab của học viên: ${student}`
+    });
+  }
+
+  const values = sheet.getDataRange().getValues();
+
+  if (values.length < 2) {
+    return jsonResponse({
+      ok: false,
+      error: `Tab ${sheet.getName()} chưa có lịch học.`
+    });
+  }
+
+  // Các cột trong Sheet:
+  // A Mã Học Viên | B STT Buổi | C Ngày Học | D Giờ Học
+  // E Mục Tiêu | F Trạng Thái | G Mã Unit
+  const now = new Date();
+  const lessons = [];
+
+  for (let i = 1; i < values.length; i++) {
+    const row = values[i];
+
+    const studentId = row[0];
+    const lessonNumber = row[1];
+    const lessonDate = row[2];
+    const lessonTime = row[3];
+    const objective = row[4];
+    const status = row[5];
+    const unitCode = row[6];
+
+    if (!studentId || !lessonDate || !lessonTime) continue;
+
+    const lessonDateTime = combineDateAndTime_(lessonDate, lessonTime);
+    if (!lessonDateTime) continue;
+
+    const normalizedStatus = normalize_(status);
+
+    // Bỏ qua các buổi đã hoàn thành / đã học.
+    const isCompleted =
+      normalizedStatus.includes('da hoc') ||
+      normalizedStatus.includes('hoan thanh');
+
+    if (isCompleted) continue;
+
+    lessons.push({
+      sequence: lessonNumber || null,
+      dateTime: lessonDateTime,
+      date: formatDate_(lessonDateTime),
+      time: formatTime_(lessonDateTime),
+      unitCode: unitCode ? String(unitCode) : '',
+      unitName: unitCode ? `Unit ${unitCode}` : 'Chưa cập nhật Unit',
+      objective: objective ? String(objective) : 'Chưa cập nhật mục tiêu buổi học',
+      status: status ? String(status) : ''
+    });
+  }
+
+  lessons.sort((a, b) => a.dateTime.getTime() - b.dateTime.getTime());
+
+  // Ưu tiên buổi chưa học sắp diễn ra; nếu lịch cũ chưa cập nhật,
+  // vẫn trả về buổi chưa học đầu tiên để giáo viên nhận biết.
+  const nextLesson =
+    lessons.find(lesson => lesson.dateTime >= now) || lessons[0];
+
+  if (!nextLesson) {
+    return jsonResponse({
+      ok: true,
+      student: student,
+      sheet: sheet.getName(),
+      lesson: null,
+      message: 'Không có buổi học chưa hoàn thành.'
+    });
+  }
+
+  return jsonResponse({
+    ok: true,
+    student: student,
+    sheet: sheet.getName(),
+    lesson: {
+      sequence: nextLesson.sequence,
+      date: nextLesson.date,
+      time: nextLesson.time,
+      unitCode: nextLesson.unitCode,
+      unitName: nextLesson.unitName,
+      objective: nextLesson.objective,
+      status: nextLesson.status
+    }
+  });
+}
+
+function findStudentSheet_(spreadsheet, studentName) {
+  const target = normalize_(studentName);
+
+  return spreadsheet.getSheets().find(sheet =>
+    normalize_(sheet.getName()) === target
+  );
+}
+
+function combineDateAndTime_(dateValue, timeValue) {
+  let date;
+
+  if (dateValue instanceof Date) {
+    date = new Date(dateValue);
+  } else {
+    const match = String(dateValue).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (!match) return null;
+    date = new Date(Number(match[3]), Number(match[2]) - 1, Number(match[1]));
+  }
+
+  let hours = 0;
+  let minutes = 0;
+
+  if (timeValue instanceof Date) {
+    hours = timeValue.getHours();
+    minutes = timeValue.getMinutes();
+  } else {
+    const match = String(timeValue).match(/^(\d{1,2}):(\d{2})/);
+    if (!match) return null;
+    hours = Number(match[1]);
+    minutes = Number(match[2]);
+  }
+
+  date.setHours(hours, minutes, 0, 0);
+  return date;
+}
+
+function formatDate_(date) {
+  return Utilities.formatDate(
+    date,
+    Session.getScriptTimeZone(),
+    'dd/MM/yyyy'
+  );
+}
+
+function formatTime_(date) {
+  return Utilities.formatDate(
+    date,
+    Session.getScriptTimeZone(),
+    'HH:mm'
+  );
+}
+
+function normalize_(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .trim()
+    .toLowerCase();
+}
+
+function jsonResponse(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}

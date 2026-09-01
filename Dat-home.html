@@ -1,749 +1,1282 @@
 <div id="vys-learning-journey">
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Orbitron:wght@500;600;700;800&display=swap');
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Orbitron:wght@500;600;700;800&display=swap');
 
-#vys-learning-journey {
-  --ink: #f5f7ff;
-  --muted: #b8c1e6;
-  --paper: #070b25;
-  --card: rgba(18, 27, 74, .78);
-  --line: rgba(147, 170, 255, .22);
-  --accent: #71e6ff;
-  --accent-soft: rgba(87, 100, 255, .19);
+    #vys-learning-journey {
+      --ink: #f5f7ff;
+      --muted: #b8c1e6;
+      --paper: #070b25;
+      --card: rgba(18, 27, 74, .78);
+      --line: rgba(147, 170, 255, .22);
+      --accent: #71e6ff;
+      --accent-soft: rgba(87, 100, 255, .19);
 
-  font-family: 'Nunito', sans-serif;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 80% 8%, rgba(137, 90, 255, .26), transparent 20%),
-    radial-gradient(circle at 15% 62%, rgba(0, 198, 255, .14), transparent 28%),
-    var(--paper);
-  border-radius: 28px;
-  overflow: hidden;
-  box-sizing: border-box;
+      font-family: 'Nunito', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 80% 8%, rgba(137, 90, 255, .26), transparent 20%),
+        radial-gradient(circle at 15% 62%, rgba(0, 198, 255, .14), transparent 28%),
+        var(--paper);
+      border-radius: 28px;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    #vys-learning-journey * {
+      box-sizing: border-box;
+    }
+
+    .vys-next-lesson-card { overflow: hidden; }
+    .vys-next-lesson-front { transition: transform .45s ease, opacity .28s ease; width: 100%; 
+  min-width: 100%; 
+  flex-shrink: 0; }
+    .vys-next-lesson-back {
+      position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 7px; padding: 28px; text-align: center;
+      color: var(--muted); font-size: 12px; line-height: 1.45;
+      transform: translateX(105%); transition: transform .45s cubic-bezier(.2,.8,.2,1);
+    }
+    .vys-next-lesson-back strong { color: #fff; font-size: 18px; font-family: 'Orbitron', sans-serif; }
+    .vys-next-lesson-back-label { color: #ffc857; font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+    .vys-next-lesson-card:hover .vys-next-lesson-front { transform: translateX(-125%); opacity: 0; }
+    .vys-next-lesson-card:hover .vys-next-lesson-back { transform: translateX(0); }
+    
+
+    /* HERO */
+
+    .vys-hero {
+      position: relative;
+      min-height: 430px;
+      padding: 70px 7% 60px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background: #050816;
+    }
+
+    .vys-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background: linear-gradient(90deg, rgba(4, 8, 30, .86) 0%, rgba(4, 8, 30, .58) 52%, rgba(4, 8, 30, .26) 100%);
+    }
+
+    .vys-hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .vys-hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 850px;
+    }
+
+    .vys-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: #aef6ff;
+      margin-bottom: 20px;
+
+      opacity: 0;
+      transform: translateY(15px);
+      animation: vysReveal .7s .1s forwards;
+    }
+
+    .vys-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: vysPulse 2s infinite;
+    }
+
+    .vys-title {
+      margin: 0;
+      font-size: clamp(42px, 7vw, 78px);
+      line-height: .98;
+      letter-spacing: -.045em;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      text-shadow: 0 0 26px rgba(125, 227, 255, .3);
+
+      opacity: 0;
+      transform: translateY(22px);
+      animation: vysReveal .8s .2s forwards;
+    }
+
+    .vys-title em {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      color: #7aa0ff;
+    }
+
+    .vys-subtitle {
+      max-width: 570px;
+      margin: 25px 0 0;
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--muted);
+
+      opacity: 0;
+      transform: translateY(18px);
+      animation: vysReveal .8s .4s forwards;
+    }
+
+    .vys-badge {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 10px 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(10, 19, 65, .62);
+      backdrop-filter: blur(8px);
+      font-size: 12px;
+      color: #d8defc;
+
+      opacity: 0;
+      transform: translateY(15px);
+      animation: vysReveal .8s .55s forwards;
+    }
+
+    /* JOURNEY */
+
+    .vys-section {
+      padding: 70px 7%;
+      position: relative;
+    }
+
+    .vys-section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 30px;
+      margin-bottom: 35px;
+    }
+
+    .vys-section-label {
+      font-size: 11px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .vys-section-title {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing: -.035em;
+      line-height: 1.1;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .vys-section-copy {
+      max-width: 380px;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    /* CARDS */
+
+    .vys-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .vys-card {
+      position: relative;
+      min-height: 230px;
+      padding: 28px;
+      background: linear-gradient(145deg, rgba(30, 42, 104, .88), rgba(12, 19, 58, .84));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+
+      opacity: 0;
+      transform: translateY(25px);
+      transition:
+        transform .35s ease,
+        box-shadow .35s ease,
+        border-color .35s ease;
+    }
+
+    .vys-card.vys-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .vys-card:nth-child(2) {
+      transition-delay: .08s;
+    }
+
+    .vys-card:nth-child(3) {
+      transition-delay: .16s;
+    }
+
+    .vys-card:hover {
+      transform: translateY(-7px);
+      border-color: rgba(113, 230, 255, .7);
+      box-shadow: 0 18px 45px rgba(0, 155, 255, .2), inset 0 1px rgba(255, 255, 255, .12);
+    }
+
+    .vys-number {
+      font-size: 12px;
+      color: #aab6f2;
+      margin-bottom: 45px;
+    }
+
+    .vys-icon {
+      width: 43px;
+      height: 43px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(117, 226, 255, .23), rgba(130, 92, 255, .3));
+      color: var(--accent);
+      font-size: 19px;
+      margin-bottom: 18px;
+      transition: transform .35s ease;
+    }
+
+    .vys-card:hover .vys-icon {
+      transform: rotate(-5deg) scale(1.08);
+    }
+
+    .vys-card h3 {
+      margin: 0 0 9px;
+      font-size: 19px;
+      letter-spacing: -.02em;
+    }
+
+    .vys-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 13px;
+    }
+
+    /* PROGRESS */
+
+    .vys-progress-box {
+      margin-top: 16px;
+      padding: 35px;
+      border-radius: 24px;
+      background: linear-gradient(115deg, #18256f, #44228e 58%, #8a306f);
+      border: 1px solid rgba(163, 223, 255, .3);
+      box-shadow: 0 20px 44px rgba(5, 10, 47, .3);
+      color: white;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .vys-progress-box::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      right: -90px;
+      top: -100px;
+      background: rgba(255, 255, 255, .045);
+    }
+
+    .vys-progress-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .vys-progress-title {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -.02em;
+    }
+
+    .vys-progress-text {
+      font-size: 12px;
+      color: rgba(255, 255, 255, .58);
+      margin-top: 7px;
+    }
+
+    .vys-percent {
+      font-size: 34px;
+      font-weight: 600;
+    }
+
+    .vys-bar {
+      height: 7px;
+      margin-top: 28px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, .12);
+      overflow: hidden;
+    }
+
+    .vys-bar-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #72efff, #a990ff, #ff8bd4);
+      box-shadow: 0 0 15px rgba(113, 230, 255, .8);
+      transition: width 1.6s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .vys-milestones {
+      position: relative;
+      height: 35px;
+      margin-top: 15px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, .8);
+    }
+
+    .vys-milestone {
+      position: absolute;
+      transform: translateX(-50%);
+      text-align: center;
+      top: 0;
+    }
+
+    .vys-milestone:first-child {
+      transform: none;
+      text-align: left;
+    }
+
+    .vys-milestone:last-child {
+      transform: none;
+      left: auto !important;
+      right: 0;
+      text-align: right;
+    }
+
+    .vys-milestone div:first-child {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .vys-milestone div:last-child {
+      font-size: 11px;
+      color: rgba(255, 255, 255, .5);
+    }
+
+    /* PATH */
+
+    .vys-path-header {
+      margin-top: 50px;
+      text-align: left;
+    }
+
+    .vys-path-header h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      margin: 0;
+      letter-spacing: -.02em;
+    }
+
+    .vys-path-header div {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .vys-path-scroll {
+      overflow-x: auto;
+      padding-top: 15px;
+      padding-bottom: 15px;
+      margin-top: 10px;
+    }
+
+    .vys-path-scroll::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .vys-path-scroll::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+    }
+
+    .vys-path-scroll::-webkit-scrollbar-thumb {
+      background: rgba(113, 230, 255, 0.3);
+      border-radius: 4px;
+    }
+
+    .vys-path {
+      display: flex;
+      align-items: flex-start;
+      position: relative;
+      min-width: 1000px;
+    }
+
+    .vys-path-line {
+      position: absolute;
+      top: 19px;
+      left: 4%;
+      right: 4%;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .vys-step {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      text-align: center;
+    }
+
+    .vys-step-dot {
+      width: 39px;
+      height: 39px;
+      margin: 0 auto 15px;
+      border-radius: 50%;
+      background: #10194e;
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      color: var(--accent);
+      transition: all .3s ease;
+    }
+
+    .vys-step:hover .vys-step-dot,
+    .vys-step.vys-step-active .vys-step-dot {
+      background: linear-gradient(135deg, #71e6ff, #8669ff);
+      color: #071134;
+      border-color: var(--accent);
+      transform: scale(1.12);
+    }
+
+    .vys-step.vys-step-active .vys-step-dot {
+      box-shadow: 0 0 15px rgba(113, 230, 255, 0.4);
+    }
+
+    .vys-step.vys-step-active strong {
+      color: var(--accent);
+    }
+
+    .vys-step strong {
+      display: block;
+      font-size: 12px;
+    }
+
+    .vys-step span {
+      display: block;
+      margin-top: 5px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* FOOTER CTA */
+
+    .vys-cta {
+      margin: 0 7% 7%;
+      padding: 42px;
+      border-radius: 25px;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(125, 239, 255, .24), transparent 24%),
+        linear-gradient(120deg, #17225f, #472282);
+      border: 1px solid rgba(165, 230, 255, .24);
+      box-shadow: 0 18px 45px rgba(3, 8, 37, .28);
+      text-align: center;
+    }
+
+    .vys-cta h2 {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(27px, 4vw, 40px);
+      font-weight: 500;
+    }
+
+    .vys-cta p {
+      margin: 12px auto 0;
+      max-width: 480px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    /* ANIMATIONS */
+
+    @keyframes vysReveal {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes vysPulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.5);
+        opacity: .5;
+      }
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 760px) {
+
+      .vys-hero {
+        min-height: 390px;
+        padding: 55px 25px;
+      }
+
+      .vys-section {
+        padding: 55px 25px;
+      }
+
+      .vys-section-head {
+        display: block;
+      }
+
+      .vys-section-copy {
+        margin-top: 15px;
+      }
+
+      .vys-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .vys-card {
+        min-height: 190px;
+      }
+
+      .vys-path-header {
+        margin-top: 35px;
+      }
+
+      .vys-path-scroll {
+        overflow-x: visible;
+        margin-top: 25px;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
+      .vys-path {
+        display: block;
+        min-width: 0;
+        margin-top: 0;
+      }
+
+      .vys-path-line {
+        top: 19px;
+        bottom: 19px;
+        left: 19px;
+        right: auto;
+        width: 1px;
+        height: auto;
+      }
+
+      .vys-step {
+        display: flex;
+        align-items: center;
+        text-align: left;
+        margin-bottom: 24px;
+      }
+
+      .vys-step-dot {
+        flex-shrink: 0;
+        margin: 0 18px 0 0;
+      }
+
+      .vys-step strong {
+        font-size: 13px;
+      }
+
+      .vys-cta {
+        margin: 0 25px 25px;
+        padding: 35px 22px;
+      }
+    }
+
+    /* Đảm bảo vòng tròn đang hover sẽ nổi lên trên cùng, không bị vòng tròn tiếp theo đè lên tooltip */
+.vys-step:hover {
+  z-index: 10;
 }
 
-#vys-learning-journey * {
-  box-sizing: border-box;
-}
-
-/* HERO */
-
-.vys-hero {
-  position: relative;
-  min-height: 430px;
-  padding: 70px 7% 60px;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  background: #050816;
-}
-
-.vys-hero::before {
-  content: "";
+/* VYS TOOLTIP - HIỂN THỊ BÊN PHẢI */
+.vys-tooltip {
   position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  background: linear-gradient(90deg, rgba(4, 8, 30, .86) 0%, rgba(4, 8, 30, .58) 52%, rgba(4, 8, 30, .26) 100%);
-}
-
-.vys-hero-video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-}
-
-.vys-hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 850px;
-}
-
-.vys-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: #aef6ff;
-  margin-bottom: 20px;
-
-  opacity: 0;
-  transform: translateY(15px);
-  animation: vysReveal .7s .1s forwards;
-}
-
-.vys-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  animation: vysPulse 2s infinite;
-}
-
-.vys-title {
-  margin: 0;
-  font-size: clamp(42px, 7vw, 78px);
-  line-height: .98;
-  letter-spacing: -.045em;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 700;
-  text-shadow: 0 0 26px rgba(125, 227, 255, .3);
-
-  opacity: 0;
-  transform: translateY(22px);
-  animation: vysReveal .8s .2s forwards;
-}
-
-.vys-title em {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 800;
-  color: #aa8cff;
-}
-
-.vys-subtitle {
-  max-width: 570px;
-  margin: 25px 0 0;
-  font-size: 16px;
-  line-height: 1.75;
-  color: var(--muted);
-
-  opacity: 0;
-  transform: translateY(18px);
-  animation: vysReveal .8s .4s forwards;
-}
-
-.vys-badge {
-  display: inline-block;
-  margin-top: 30px;
-  padding: 10px 15px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(10, 19, 65, .62);
+  top: -10px; /* Căn mép trên của tooltip gần bằng với mép trên vòng tròn */
+  left: calc(50% + 30px); /* Đẩy thẻ sang bên phải vòng tròn */
+  transform: translateX(15px); /* Nằm dịch ra xa một chút để tạo đà trượt vào */
+  width: max-content;
+  max-width: 260px;
+  padding: 12px 16px;
+  
+  background: rgba(7, 11, 37, 0.95);
   backdrop-filter: blur(8px);
-  font-size: 12px;
-  color: #d8defc;
-
+  border: 1px solid rgba(113, 230, 255, 0.35);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(113, 230, 255, 0.15);
+  
+  text-align: left;
   opacity: 0;
-  transform: translateY(15px);
-  animation: vysReveal .8s .55s forwards;
+  visibility: hidden;
+  z-index: 100;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* JOURNEY */
-
-.vys-section {
-  padding: 70px 7%;
-  position: relative;
-}
-
-.vys-section-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 30px;
-  margin-bottom: 35px;
-}
-
-.vys-section-label {
-  font-size: 11px;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: var(--accent);
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-.vys-section-title {
-  margin: 0;
-  font-size: clamp(28px, 4vw, 44px);
-  letter-spacing: -.035em;
-  line-height: 1.1;
-  font-family: 'Orbitron', sans-serif;
-}
-
-.vys-section-copy {
-  max-width: 380px;
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.7;
-  font-size: 14px;
-}
-
-/* CARDS */
-
-.vys-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.vys-card {
-  position: relative;
-  min-height: 230px;
-  padding: 28px;
-  background: linear-gradient(145deg, rgba(30, 42, 104, .88), rgba(12, 19, 58, .84));
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  overflow: hidden;
-
-  opacity: 0;
-  transform: translateY(25px);
-  transition:
-    transform .35s ease,
-    box-shadow .35s ease,
-    border-color .35s ease;
-}
-
-.vys-card.vys-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.vys-card:nth-child(2) {
-  transition-delay: .08s;
-}
-
-.vys-card:nth-child(3) {
-  transition-delay: .16s;
-}
-
-.vys-card:hover {
-  transform: translateY(-7px);
-  border-color: rgba(113, 230, 255, .7);
-  box-shadow: 0 18px 45px rgba(0, 155, 255, .2), inset 0 1px rgba(255,255,255,.12);
-}
-
-.vys-number {
-  font-size: 12px;
-  color: #aab6f2;
-  margin-bottom: 45px;
-}
-
-.vys-icon {
-  width: 43px;
-  height: 43px;
-  border-radius: 13px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, rgba(117, 226, 255, .23), rgba(130, 92, 255, .3));
-  color: var(--accent);
-  font-size: 19px;
-  margin-bottom: 18px;
-  transition: transform .35s ease;
-}
-
-.vys-card:hover .vys-icon {
-  transform: rotate(-5deg) scale(1.08);
-}
-
-.vys-card h3 {
-  margin: 0 0 9px;
-  font-size: 19px;
-  letter-spacing: -.02em;
-}
-
-.vys-card p {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.65;
-  font-size: 13px;
-}
-
-/* PROGRESS */
-
-.vys-progress-box {
-  margin-top: 16px;
-  padding: 35px;
-  border-radius: 24px;
-  background: linear-gradient(115deg, #18256f, #44228e 58%, #8a306f);
-  border: 1px solid rgba(163, 223, 255, .3);
-  box-shadow: 0 20px 44px rgba(5, 10, 47, .3);
-  color: white;
-  overflow: hidden;
-  position: relative;
-}
-
-.vys-progress-box::after {
+/* Mũi tên trỏ sang TRÁI (chỉ ngược lại vào vòng tròn) */
+.vys-tooltip::after {
   content: "";
   position: absolute;
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  right: -90px;
-  top: -100px;
-  background: rgba(255,255,255,.045);
+  top: 24px; /* Căn mũi tên nằm ngang hàng với tâm vòng tròn */
+  left: -12px; /* Kéo mũi tên ra rìa trái của thẻ tooltip */
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent rgba(113, 230, 255, 0.35) transparent transparent;
 }
 
-.vys-progress-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
+/* Hiệu ứng khi Hover trượt từ phải vào */
+.vys-step:hover .vys-tooltip,
+.vys-card:hover .vys-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
 }
 
-.vys-progress-title {
-  margin: 0;
-  font-size: 22px;
-  letter-spacing: -.02em;
-}
-
-.vys-progress-text {
-  font-size: 12px;
-  color: rgba(255,255,255,.58);
-  margin-top: 7px;
-}
-
-.vys-percent {
-  font-size: 34px;
-  font-weight: 600;
-}
-
-.vys-bar {
-  height: 7px;
-  margin-top: 28px;
-  border-radius: 20px;
-  background: rgba(255,255,255,.12);
-  overflow: hidden;
-}
-
-.vys-bar-fill {
-  width: 0;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, #72efff, #a990ff, #ff8bd4);
-  box-shadow: 0 0 15px rgba(113, 230, 255, .8);
-  transition: width 1.6s cubic-bezier(.22,1,.36,1);
-}
-
-/* PATH */
-
-.vys-path {
-  display: flex;
-  align-items: flex-start;
-  position: relative;
-  margin-top: 50px;
-}
-
-.vys-path-line {
-  position: absolute;
-  top: 19px;
-  left: 6%;
-  right: 6%;
-  height: 1px;
-  background: var(--line);
-}
-
-.vys-step {
-  position: relative;
-  z-index: 2;
-  flex: 1;
-  text-align: center;
-}
-
-.vys-step-dot {
-  width: 39px;
-  height: 39px;
-  margin: 0 auto 15px;
-  border-radius: 50%;
-  background: #10194e;
-  border: 1px solid var(--line);
-  display: grid;
-  place-items: center;
-  font-size: 12px;
+/* Typography bên trong thẻ (Giữ nguyên) */
+.vys-tooltip-time {
+  font-size: 10.5px;
   color: var(--accent);
-  transition: all .3s ease;
+  letter-spacing: 0.05em;
+  margin-bottom: 5px;
+  font-weight: 700;
 }
 
-.vys-step:hover .vys-step-dot {
-  background: linear-gradient(135deg, #71e6ff, #8669ff);
-  color: #071134;
-  border-color: var(--accent);
-  transform: scale(1.12);
+.vys-tooltip-title {
+  font-size: 13.5px;
+  color: var(--ink);
+  font-weight: 700;
+  margin-bottom: 6px;
 }
 
-.vys-step strong {
-  display: block;
-  font-size: 12px;
-}
-
-.vys-step span {
-  display: block;
-  margin-top: 5px;
-  font-size: 11px;
+.vys-tooltip-obj {
+  font-size: 11.5px;
   color: var(--muted);
+  line-height: 1.5;
 }
 
-/* FOOTER CTA */
-
-.vys-cta {
-  margin: 0 7% 7%;
-  padding: 42px;
-  border-radius: 25px;
-  background:
-    radial-gradient(circle at 15% 20%, rgba(125, 239, 255, .24), transparent 24%),
-    linear-gradient(120deg, #17225f, #472282);
-  border: 1px solid rgba(165, 230, 255, .24);
-  box-shadow: 0 18px 45px rgba(3, 8, 37, .28);
-  text-align: center;
-}
-
-.vys-cta h2 {
-  margin: 0;
-  font-family: 'Orbitron', sans-serif;
-  font-size: clamp(27px, 4vw, 40px);
-  font-weight: 500;
-}
-
-.vys-cta p {
-  margin: 12px auto 0;
-  max-width: 480px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-/* ANIMATIONS */
-
-@keyframes vysReveal {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes vysPulse {
-  0%,100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.5); opacity: .5; }
-}
-
-/* MOBILE */
-
+/* Chỉnh lại cho Mobile: Đưa xuống dưới vòng tròn vì đt màn hình dọc không đủ chỗ chứa bên phải */
 @media (max-width: 760px) {
-
-  .vys-hero {
-    min-height: 390px;
-    padding: 55px 25px;
+  .vys-tooltip {
+    left: 40px; 
+    top: 100%;
+    transform: translateY(10px) translateX(0);
+    width: 220px;
+    margin-top: 5px;
   }
-
-  .vys-section {
-    padding: 55px 25px;
+  .vys-tooltip::after {
+    left: 15px; 
+    top: -12px; /* Mũi tên trỏ lên trên */
+    border-color: transparent transparent rgba(113, 230, 255, 0.35) transparent;
   }
-
-  .vys-section-head {
-    display: block;
-  }
-
-  .vys-section-copy {
-    margin-top: 15px;
-  }
-
-  .vys-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .vys-card {
-    min-height: 190px;
-  }
-
-  .vys-path {
-    display: block;
-    margin-top: 35px;
-  }
-
-  .vys-path-line {
-    top: 19px;
-    bottom: 19px;
-    left: 19px;
-    right: auto;
-    width: 1px;
-    height: auto;
-  }
-
-  .vys-step {
-    display: flex;
-    align-items: center;
-    text-align: left;
-    margin-bottom: 24px;
-  }
-
-  .vys-step-dot {
-    flex-shrink: 0;
-    margin: 0 18px 0 0;
-  }
-
-  .vys-step strong {
-    font-size: 13px;
-  }
-
-  .vys-cta {
-    margin: 0 25px 25px;
-    padding: 35px 22px;
+  .vys-step:hover .vys-tooltip,
+  .vys-card:hover .vys-tooltip {
+    transform: translateY(0) translateX(0);
   }
 }
-
-</style>
-
-
-<!-- HERO -->
-
-<section class="vys-hero">
-
-  <video class="vys-hero-video" autoplay muted loop playsinline aria-hidden="true">
-    <source src="background.mp4" type="video/mp4">
-  </video>
-
-  <div class="vys-hero-content">
-
-    <div class="vys-eyebrow">
-      <span class="vys-dot"></span>
-      Your personal learning space
-    </div>
-
-    <h1 class="vys-title">
-      DƯƠNG GIA <em>ĐẠT</em>
-    </h1>
-
-    <p class="vys-subtitle">
-      Welcome to your learning journey — a space where
-      lessons, practice, homework and progress come together
-      in one place.
-    </p>
-
-    <div class="vys-badge">
-      English 8 · Personalized Learning
-    </div>
-
-  </div>
-
-</section>
+  </style>
 
 
-<!-- JOURNEY -->
+  <!-- HERO -->
 
-<section class="vys-section">
+  <section class="vys-hero">
 
-  <div class="vys-section-head">
+    <video class="vys-hero-video" autoplay muted loop playsinline aria-hidden="true">
+      <source src="darkblue.mp4" type="video/mp4">
+    </video>
 
-    <div>
-      <div class="vys-section-label">Your learning journey</div>
-      <h2 class="vys-section-title">
-        Everything you need,<br>
+    <div class="vys-hero-content">
+
+      <div class="vys-eyebrow">
+        <span class="vys-dot"></span>
+        Your personal learning space
+      </div>
+
+      <h1 class="vys-title">
+        DƯƠNG GIA <em>ĐẠT</em>
+      </h1>
+
+      <p class="vys-subtitle">
+        Welcome to your learning journey — a space where
+        lessons, practice, homework and progress come together
         in one place.
-      </h2>
+      </p>
+
+      <div class="vys-badge">
+        English 8 · Personalized Learning
+      </div>
+
     </div>
 
-    <p class="vys-section-copy">
-      Your learning space is organized around what
-      you are currently learning, practising and working toward.
-    </p>
-
-  </div>
+  </section>
 
 
-  <div class="vys-grid">
+  <!-- JOURNEY -->
 
-    <article class="vys-card">
+  <section class="vys-section">
 
-      <div class="vys-number">01</div>
-
-      <div class="vys-icon">◎</div>
-
-      <h3>Know your starting point</h3>
-
-      <p>
-        Check your English assessment and understand
-        the areas we are working on together.
-      </p>
-
-    </article>
-
-
-    <article class="vys-card">
-
-      <div class="vys-number">02</div>
-
-      <div class="vys-icon">↗</div>
-
-      <h3>Practise between lessons</h3>
-
-      <p>
-        Find your homework, exercises and personalised
-        practice activities whenever you need them.
-      </p>
-
-    </article>
-
-
-    <article class="vys-card">
-
-      <div class="vys-number">03</div>
-
-      <div class="vys-icon">✦</div>
-
-      <h3>Keep moving forward</h3>
-
-      <p>
-        Follow your learning journey through each unit
-        and build your English step by step.
-      </p>
-
-    </article>
-
-  </div>
-
-
-  <!-- PROGRESS -->
-
-  <div class="vys-progress-box">
-
-    <div class="vys-progress-top">
+    <div class="vys-section-head">
 
       <div>
-        <h3 class="vys-progress-title">
-          Your English journey
-        </h3>
+        <div class="vys-section-label">Your learning journey</div>
+        <h2 class="vys-section-title">
+          Everything you need,<br>
+          in one place.
+        </h2>
+      </div>
 
-        <div class="vys-progress-text">
-          Current learning progress
+      <p class="vys-section-copy">
+        Your learning space is organized around what
+        you are currently learning, practising and working toward.
+      </p>
+
+    </div>
+
+
+    <div class="vys-grid">
+
+      <a href="https://script.google.com/macros/s/AKfycbwHZrEU54l-g-eYBqCfkuqi8YCGBa3-rSt8wAmZR5Zcvmn43N4uKfRMiWUPYj7LvMIdyw/exec?student=D%C6%B0%C6%A1ng%20Gia%20%C4%90%E1%BA%A1t"
+        target="_blank" class="vys-card vys-hw-card" id="vys-hw-card"
+        style="text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 230px; padding: 28px; position: relative; overflow: hidden; border: 1px solid rgba(113, 230, 255, 0.3);">
+
+        <!-- bg image (updated dynamically) -->
+        <div id="vys-hw-bg"
+          style="position: absolute; inset: 0; background: linear-gradient(135deg, #0d1b4b 0%, #1a0a3e 100%); filter: blur(3px) brightness(0.4); transform: scale(1.05); transition: background 0.6s ease;">
+        </div>
+        <!-- overlay -->
+        <div
+          style="position: absolute; inset: 0; background: linear-gradient(160deg, rgba(10,18,60,0.55) 0%, rgba(6,11,37,0.78) 100%);">
+        </div>
+
+        <div
+          style="position: relative; z-index: 2; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #71e6ff; margin-bottom: 12px; opacity: 0.85;">
+          Homework</div>
+
+        <div
+          style="position: relative; z-index: 2; display: flex; align-items: baseline; justify-content: center; gap: 4px; line-height: 1;">
+          <span id="vys-hw-done"
+            style="font-size: 72px; font-weight: 800; color: #fff; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 30px rgba(113, 230, 255, 0.6), 0 0 60px rgba(113, 230, 255, 0.25);">—</span>
+          <span id="vys-hw-total"
+            style="font-size: 28px; font-weight: 600; color: rgba(113,230,255,0.7); padding-bottom: 4px;"></span>
+        </div>
+
+        <div
+          style="position: relative; z-index: 2; margin-top: 14px; font-size: 12px; color: rgba(184,193,230,0.7); letter-spacing: .04em;">
+          bài hoàn thành</div>
+
+      </a>
+
+      <script>
+        (function () {
+          var API = 'https://script.google.com/macros/s/AKfycbwHZrEU54l-g-eYBqCfkuqi8YCGBa3-rSt8wAmZR5Zcvmn43N4uKfRMiWUPYj7LvMIdyw/exec?student=D%C6%B0%C6%A1ng%20Gia%20%C4%90%E1%BA%A1t&format=json';
+          fetch(API)
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              if (data.latestImage) {
+                document.getElementById('vys-hw-bg').style.background = "url('" + data.latestImage + "') center/cover no-repeat";
+              }
+              if (data.completed !== undefined) {
+                document.getElementById('vys-hw-done').textContent = data.completed;
+              }
+              if (data.total !== undefined) {
+                document.getElementById('vys-hw-total').textContent = '/' + data.total;
+              }
+            })
+            .catch(function () {
+              document.getElementById('vys-hw-done').textContent = '?';
+              document.getElementById('vys-hw-total').textContent = '';
+            });
+        })();
+      </script>
+
+
+      <article class="vys-card"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 230px; padding: 28px; position: relative; overflow: hidden; border: 1px solid rgba(113, 230, 255, 0.3);">
+
+        <!-- bg image -->
+        <div
+          style="position: absolute; inset: 0; background: linear-gradient(135deg, #0d1b4b 0%, #1a0a3e 100%); filter: blur(3px) brightness(0.4); transform: scale(1.05);">
+        </div>
+        <!-- overlay -->
+        <div
+          style="position: absolute; inset: 0; background: linear-gradient(160deg, rgba(10,18,60,0.55) 0%, rgba(6,11,37,0.78) 100%);">
+        </div>
+
+        <div
+          style="position: relative; z-index: 2; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #71e6ff; margin-bottom: 12px; opacity: 0.85;">
+          Average Score</div>
+
+        <div
+          style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; width: 90px; height: 90px; border-radius: 50%; border: 2px solid rgba(113, 230, 255, 0.4); box-shadow: 0 0 20px rgba(113, 230, 255, 0.3), inset 0 0 15px rgba(113, 230, 255, 0.2); background: rgba(113, 230, 255, 0.05);">
+          <span id="vys-avg-score"
+            style="font-size: 38px; font-weight: 800; color: #fff; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 20px rgba(113, 230, 255, 0.6);">...</span>
+        </div>
+
+        <div
+          style="position: relative; z-index: 2; margin-top: 14px; font-size: 12px; color: rgba(184,193,230,0.7); letter-spacing: .04em;">
+          điểm trung bình</div>
+
+      </article>
+
+      <script>
+        (function () {
+          var apiUrl = 'https://script.google.com/macros/s/AKfycbwHZrEU54l-g-eYBqCfkuqi8YCGBa3-rSt8wAmZR5Zcvmn43N4uKfRMiWUPYj7LvMIdyw/exec?student=D%C6%B0%C6%A1ng%20Gia%20%C4%90%E1%BA%A1t&format=json';
+          fetch(apiUrl)
+            .then(function (r) {
+              if (!r.ok) throw new Error('Unable to load average score');
+              return r.json();
+            })
+            .then(function (data) {
+              if (data.average !== undefined && data.average !== null && data.average !== '') {
+                document.getElementById('vys-avg-score').textContent = data.average;
+              } else {
+                throw new Error('Average score is empty');
+              }
+            })
+            .catch(function (e) {
+              console.error('Error fetching average score', e);
+              document.getElementById('vys-avg-score').textContent = '—';
+            });
+        })();
+      </script>
+
+
+      <article class="vys-card vys-next-lesson-card"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 230px; padding: 28px; position: relative; border: 1px solid rgba(255, 200, 87, 0.3);">
+
+        <!-- bg image -->
+        <div
+          style="position: absolute; inset: 0; background: linear-gradient(135deg, #1f1a0a 0%, #1a0a3e 100%); filter: blur(3px) brightness(0.4); transform: scale(1.05);">
+        </div>
+        <!-- overlay -->
+        <div
+          style="position: absolute; inset: 0; background: linear-gradient(160deg, rgba(30,25,10,0.55) 0%, rgba(6,11,37,0.78) 100%);">
+        </div>
+
+        <div class="vys-next-lesson-front"
+          style="position: relative; z-index: 2; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #ffc857; margin-bottom: 20px; opacity: 0.85;">
+          Buổi học tiếp theo</div>
+
+        <div class="vys-next-lesson-front" style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: center;">
+          <span id="vys-next-lesson-time"
+            style="font-size: 38px; font-weight: 800; color: #fff; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 25px rgba(255, 200, 87, 0.6);">20:00
+            </span>
+        </div>
+
+        <div class="vys-next-lesson-front"
+          style="position: relative; z-index: 2; margin-top: 18px; font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, 0.85); letter-spacing: .02em;">
+          <span id="vys-next-lesson-date">Đang tải lịch học...</span></div>
+
+        <div class="vys-next-lesson-back">
+          <div class="vys-next-lesson-back-label" id="vys-next-lesson-tooltip-time">Đang tải...</div>
+          <strong id="vys-next-lesson-unit">Unit</strong>
+          <span id="vys-next-lesson-objective">Mục tiêu buổi học sẽ hiển thị tại đây.</span>
+        </div>
+
+      </article>
+
+      <script>
+        (function () {
+          var endpoint = 'https://script.google.com/macros/s/AKfycbxOP6LiMQeO-Jp2_HGwj4TV5I_6Q2lpx1N0Keb9e2sNEQlV9azYE_yUV8ZEFy7xnZ6Qgw/exec';
+          var student = 'Dương Gia Đạt';
+          var timeEl = document.getElementById('vys-next-lesson-time');
+          var dateEl = document.getElementById('vys-next-lesson-date');
+          var tooltipTimeEl = document.getElementById('vys-next-lesson-tooltip-time');
+          var unitEl = document.getElementById('vys-next-lesson-unit');
+          var objectiveEl = document.getElementById('vys-next-lesson-objective');
+
+          fetch(endpoint + '?student=' + encodeURIComponent(student))
+            .then(function (response) {
+              if (!response.ok) throw new Error('Không thể tải lịch học');
+              return response.json();
+            })
+            .then(function (data) {
+              if (!data.ok || !data.lesson) throw new Error(data.error || data.message || 'Chưa có buổi học');
+              var lesson = data.lesson;
+              timeEl.textContent = lesson.time || 'Chưa xếp giờ';
+              dateEl.textContent = 'Ngày ' + (lesson.date || 'chưa cập nhật');
+              tooltipTimeEl.textContent = (lesson.date || '') + (lesson.time ? ' • ' + lesson.time : '');
+              unitEl.textContent = lesson.unitName || 'Chưa cập nhật Unit';
+              objectiveEl.innerHTML = 'Mục tiêu: <br>' + (lesson.objective ? lesson.objective.replace(/\n/g, '<br>') : 'Chưa cập nhật');
+            })
+            .catch(function (error) {
+              console.error('Error fetching next lesson:', error);
+              timeEl.textContent = '—';
+              dateEl.textContent = 'Chưa tải được lịch học';
+              tooltipTimeEl.textContent = 'Không có dữ liệu';
+              unitEl.textContent = 'Buổi học tiếp theo';
+              objectiveEl.textContent = 'Vui lòng kiểm tra kết nối Google Sheet.';
+            });
+        })();
+      </script>
+
+    </div>
+
+
+    <!-- PROGRESS -->
+
+    <div class="vys-progress-box">
+
+      <div class="vys-progress-top">
+
+        <div>
+          <h3 class="vys-progress-title">
+            Your English journey
+          </h3>
+
+          <div class="vys-progress-text">
+            Current learning progress
+          </div>
+        </div>
+
+        <div class="vys-percent">
+          0%
+        </div>
+
+      </div>
+
+      <div class="vys-bar">
+        <div class="vys-bar-fill"></div>
+      </div>
+
+      <div class="vys-milestones">
+        <div class="vys-milestone" style="left: 0;">
+          <div>0%</div>
+          <div>5.0 IELTS</div>
+        </div>
+        <div class="vys-milestone" style="left: 25%;">
+          <div>25%</div>
+          <div>3 tháng</div>
+        </div>
+        <div class="vys-milestone" style="left: 50%;">
+          <div>50%</div>
+          <div>6 tháng</div>
+        </div>
+        <div class="vys-milestone" style="left: 75%;">
+          <div>75%</div>
+          <div>9 tháng</div>
+        </div>
+        <div class="vys-milestone" style="left: 100%;">
+          <div>100%</div>
+          <div>5.5 IELTS</div>
         </div>
       </div>
 
-      <div class="vys-percent">
-        50%
-      </div>
-
     </div>
 
-    <div class="vys-bar">
-      <div class="vys-bar-fill"></div>
-    </div>
 
-  </div>
+    <!-- PATH -->
 
-
-  <!-- PATH -->
-
-  <div class="vys-path">
-
-    <div class="vys-path-line"></div>
-
-    <div class="vys-step">
-      <div class="vys-step-dot">01</div>
+    <div class="vys-path-header">
+      <h3>
+        SGK TIẾNG ANH LỚP 8
+      </h3>
       <div>
-        <strong>Assessment</strong>
-        <span>Know your level</span>
+        Bài học đang học đến trong sách giáo khoa Tiếng Anh lớp 8
       </div>
     </div>
 
-    <div class="vys-step">
-      <div class="vys-step-dot">02</div>
+    <div class="vys-path-scroll">
+      <div class="vys-path">
+
+        <div class="vys-path-line"></div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">01</div>
+          <div>
+            <strong>Unit 1</strong>
+            <span>LEISURE TIME</span>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">02</div>
+          <div>
+            <strong>Unit 2</strong>
+            <span>LIFE IN THE COUNTRYSIDE</span>
+          </div>
+        </div>
+
+        <div class="vys-step vys-step-active">
+          <div class="vys-step-dot">03</div>
+
+          <!-- Chèn tooltip vào đây -->
+          <div class="vys-tooltip">
+            <div class="vys-tooltip-time">29/08/2026 • 20:00</div>
+            <div class="vys-tooltip-title">Unit 3 - Review & Test 1</div>
+            <div class="vys-tooltip-obj">Mục tiêu: Ôn tập kiến thức Unit 1 & 2; Làm mini test 15 phút.</div>
+          </div>
+          <!-- Kết thúc tooltip -->
+
+          <div>
+            <strong>Unit 3</strong>
+            <span>TEENAGERS</span>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">04</div>
+          <div>
+            <strong>Unit 4</strong>
+            <span>ETHNIC GROUPS OF VIET NAM</span>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">05</div>
+          <div>
+            <strong>Unit 5</strong>
+            <span>OUR CUSTOMS AND TRADITIONS</span>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">06</div>
+          <div>
+            <strong>Unit 6</strong>
+            <span>LIFESTYLES</span>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">07</div>
+          <div>
+            <strong>Unit 7</strong>
+            <span>ENVIRONMENTAL PROTECTION</span>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">08</div>
+          <div>
+            <strong>Unit 8</strong>
+            <span>SHOPPING</span>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">09</div>
+          <div>
+            <strong>Unit 9</strong>
+            <span>NATURAL DISASTERS</span>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">10</div>
+          <div>
+            <strong>Unit 10</strong>
+            <span>COMMUNICATION IN THE FUTURE</span>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">11</div>
+          <div>
+            <strong>Unit 11</strong>
+            <span>SCIENCE AND TECHNOLOGY</span>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">12</div>
+          <div>
+            <strong>Unit 12</strong>
+            <span>LIFE ON OTHER PLANETS</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="vys-path-header">
+      <h3>
+        SÁCH CAMBRIDGE IELTS
+      </h3>
       <div>
-        <strong>Lessons</strong>
-        <span>Learn together</span>
+        Sách đang được giải đề tới trong sách Cambridge IELTS
       </div>
     </div>
 
-    <div class="vys-step">
-      <div class="vys-step-dot">03</div>
-      <div>
-        <strong>Practice</strong>
-        <span>Build confidence</span>
+    <div class="vys-path-scroll">
+      <div class="vys-path">
+
+        <div class="vys-path-line"></div>
+
+        <div class="vys-step vys-step-active">
+          <div class="vys-step-dot">20</div>
+          <div>
+            <strong>Cambridge 20</strong>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">19</div>
+          <div>
+            <strong>Cambridge 19</strong>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">18</div>
+          <div>
+            <strong>Cambridge 18</strong>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">17</div>
+          <div>
+            <strong>Cambridge 17</strong>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">16</div>
+          <div>
+            <strong>Cambridge 16</strong>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">15</div>
+          <div>
+            <strong>Cambridge 15</strong>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">14</div>
+          <div>
+            <strong>Cambridge 14</strong>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">13</div>
+          <div>
+            <strong>Cambridge 13</strong>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">12</div>
+          <div>
+            <strong>Cambridge 12</strong>
+          </div>
+        </div>
+
+        <div class="vys-step">
+          <div class="vys-step-dot">11</div>
+          <div>
+            <strong>Cambridge 11</strong>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <div class="vys-step">
-      <div class="vys-step-dot">04</div>
-      <div>
-        <strong>Progress</strong>
-        <span>Keep growing</span>
-      </div>
-    </div>
-
-  </div>
-
-</section>
+  </section>
 
 
-<!-- CTA -->
+  <!-- CTA -->
 
-<section class="vys-cta">
+  <section class="vys-cta">
 
-  <h2>
-    Keep learning. Keep growing.
-  </h2>
+    <h2>
+      Keep learning. Keep growing.
+    </h2>
 
-  <p>
-    Your learning space will grow with you
-    as we move through the course.
-  </p>
+    <p>
+      Your learning space will grow with you
+      as we move through the course.
+    </p>
 
-</section>
+  </section>
 
 
-<script>
+  <script>
 
-(function () {
+    (function () {
 
-  const root = document.getElementById('vys-learning-journey');
+      const root = document.getElementById('vys-learning-journey');
 
-  if (!root) return;
+      if (!root) return;
 
-  const cards = root.querySelectorAll('.vys-card');
-  const progress = root.querySelector('.vys-bar-fill');
+      const cards = root.querySelectorAll('.vys-card');
+      const progress = root.querySelector('.vys-bar-fill');
 
-  const observer = new IntersectionObserver(
-    function(entries) {
+      const observer = new IntersectionObserver(
+        function (entries) {
 
-      entries.forEach(function(entry) {
+          entries.forEach(function (entry) {
 
-        if (entry.isIntersecting) {
+            if (entry.isIntersecting) {
 
-          entry.target.classList.add('vys-visible');
+              entry.target.classList.add('vys-visible');
 
+            }
+
+          });
+
+        },
+        {
+          threshold: 0.15
         }
+      );
 
+      cards.forEach(function (card) {
+        observer.observe(card);
       });
 
-    },
-    {
-      threshold: 0.15
-    }
-  );
 
-  cards.forEach(function(card) {
-    observer.observe(card);
-  });
+      const progressObserver = new IntersectionObserver(
+        function (entries) {
 
+          if (entries[0].isIntersecting) {
 
-  const progressObserver = new IntersectionObserver(
-    function(entries) {
+            setTimeout(function () {
+              progress.style.width = '0%';
+            }, 200);
 
-      if (entries[0].isIntersecting) {
+            progressObserver.disconnect();
 
-        setTimeout(function() {
-          progress.style.width = '50%';
-        }, 200);
+          }
 
-        progressObserver.disconnect();
+        },
+        {
+          threshold: 0.5
+        }
+      );
 
-      }
+      progressObserver.observe(progress);
 
-    },
-    {
-      threshold: 0.5
-    }
-  );
+    })();
 
-  progressObserver.observe(progress);
-
-})();
-
-</script>
+  </script>
 
 </div>

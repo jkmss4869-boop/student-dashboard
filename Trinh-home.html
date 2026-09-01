@@ -27,6 +27,20 @@
   box-sizing: border-box;
 }
 
+.vys-next-lesson-card { overflow: hidden; }
+.vys-next-lesson-front { transition: transform .45s ease, opacity .28s ease; }
+.vys-next-lesson-back {
+  position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 7px; padding: 28px; text-align: center;
+  color: var(--muted); font-size: 12px; line-height: 1.45;
+  background: linear-gradient(110deg, rgba(10, 18, 60, .98), rgba(30, 25, 10, .96));
+  transform: translateX(105%); transition: transform .45s cubic-bezier(.2,.8,.2,1);
+}
+.vys-next-lesson-back strong { color: #fff; font-size: 18px; font-family: 'Orbitron', sans-serif; }
+.vys-next-lesson-back-label { color: #ffc857; font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+.vys-next-lesson-card:hover .vys-next-lesson-front { transform: translateX(-125%); opacity: 0; }
+.vys-next-lesson-card:hover .vys-next-lesson-back { transform: translateX(0); }
+
 /* HERO */
 
 .vys-hero {
@@ -321,20 +335,87 @@
   transition: width 1.6s cubic-bezier(.22,1,.36,1);
 }
 
+.vys-milestones {
+  position: relative;
+  height: 35px;
+  margin-top: 15px;
+  font-size: 13px;
+  color: rgba(255,255,255,.8);
+}
+.vys-milestone {
+  position: absolute;
+  transform: translateX(-50%);
+  text-align: center;
+  top: 0;
+}
+.vys-milestone:first-child {
+  transform: none;
+  text-align: left;
+}
+.vys-milestone:last-child {
+  transform: none;
+  left: auto !important;
+  right: 0;
+  text-align: right;
+}
+.vys-milestone div:first-child {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.vys-milestone div:last-child {
+  font-size: 11px;
+  color: rgba(255,255,255,.5);
+}
+
 /* PATH */
+
+.vys-path-header {
+  margin-top: 50px;
+  text-align: left;
+}
+.vys-path-header h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 22px;
+  margin: 0;
+  letter-spacing: -.02em;
+}
+.vys-path-header div {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.vys-path-scroll {
+  overflow-x: auto;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-top: 10px;
+}
+
+.vys-path-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.vys-path-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+.vys-path-scroll::-webkit-scrollbar-thumb {
+  background: rgba(113, 230, 255, 0.3);
+  border-radius: 4px;
+}
 
 .vys-path {
   display: flex;
   align-items: flex-start;
   position: relative;
-  margin-top: 50px;
+  min-width: 1000px;
 }
 
 .vys-path-line {
   position: absolute;
   top: 19px;
-  left: 6%;
-  right: 6%;
+  left: 4%;
+  right: 4%;
   height: 1px;
   background: var(--line);
 }
@@ -360,11 +441,20 @@
   transition: all .3s ease;
 }
 
-.vys-step:hover .vys-step-dot {
+.vys-step:hover .vys-step-dot,
+.vys-step.vys-step-active .vys-step-dot {
   background: linear-gradient(135deg, #71e6ff, #8669ff);
   color: #071134;
   border-color: var(--accent);
   transform: scale(1.12);
+}
+
+.vys-step.vys-step-active .vys-step-dot {
+  box-shadow: 0 0 15px rgba(113, 230, 255, 0.4);
+}
+
+.vys-step.vys-step-active strong {
+  color: var(--accent);
 }
 
 .vys-step strong {
@@ -451,9 +541,21 @@
     min-height: 190px;
   }
 
+  .vys-path-header {
+    margin-top: 35px;
+  }
+
+  .vys-path-scroll {
+    overflow-x: visible;
+    margin-top: 25px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
   .vys-path {
     display: block;
-    margin-top: 35px;
+    min-width: 0;
+    margin-top: 0;
   }
 
   .vys-path-line {
@@ -548,52 +650,139 @@
 
   <div class="vys-grid">
 
-    <article class="vys-card">
+    <a href="https://script.google.com/macros/s/AKfycbwHZrEU54l-g-eYBqCfkuqi8YCGBa3-rSt8wAmZR5Zcvmn43N4uKfRMiWUPYj7LvMIdyw/exec?student=Th%C3%A1i%20Di%E1%BB%85m%20Trinh" target="_blank" class="vys-card vys-hw-card" id="vys-hw-card" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 230px; padding: 28px; position: relative; overflow: hidden; border: 1px solid rgba(113, 230, 255, 0.3);">
 
-      <div class="vys-number">01</div>
+      <!-- bg image (updated dynamically) -->
+      <div id="vys-hw-bg" style="position: absolute; inset: 0; background: linear-gradient(135deg, #0d1b4b 0%, #1a0a3e 100%); filter: blur(3px) brightness(0.4); transform: scale(1.05); transition: background 0.6s ease;"></div>
+      <!-- overlay -->
+      <div style="position: absolute; inset: 0; background: linear-gradient(160deg, rgba(10,18,60,0.55) 0%, rgba(6,11,37,0.78) 100%);"></div>
 
-      <div class="vys-icon">◎</div>
+      <div style="position: relative; z-index: 2; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #71e6ff; margin-bottom: 12px; opacity: 0.85;">Homework</div>
 
-      <h3>Know your starting point</h3>
+      <div style="position: relative; z-index: 2; display: flex; align-items: baseline; justify-content: center; gap: 4px; line-height: 1;">
+        <span id="vys-hw-done" style="font-size: 72px; font-weight: 800; color: #fff; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 30px rgba(113, 230, 255, 0.6), 0 0 60px rgba(113, 230, 255, 0.25);">—</span>
+        <span id="vys-hw-total" style="font-size: 28px; font-weight: 600; color: rgba(113,230,255,0.7); padding-bottom: 4px;"></span>
+      </div>
 
-      <p>
-        Check your English assessment and understand
-        the areas we are working on together.
-      </p>
+      <div style="position: relative; z-index: 2; margin-top: 14px; font-size: 12px; color: rgba(184,193,230,0.7); letter-spacing: .04em;">bài hoàn thành</div>
+
+    </a>
+
+    <script>
+    (function() {
+      var API = 'https://script.google.com/macros/s/AKfycbwHZrEU54l-g-eYBqCfkuqi8YCGBa3-rSt8wAmZR5Zcvmn43N4uKfRMiWUPYj7LvMIdyw/exec?student=Th%C3%A1i%20Di%E1%BB%85m%20Trinh&format=json';
+      fetch(API)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.latestImage) {
+            document.getElementById('vys-hw-bg').style.background = "url('" + data.latestImage + "') center/cover no-repeat";
+          }
+          if (data.completed !== undefined) {
+            document.getElementById('vys-hw-done').textContent = data.completed;
+          }
+          if (data.total !== undefined) {
+            document.getElementById('vys-hw-total').textContent = '/' + data.total;
+          }
+        })
+        .catch(function() {
+          document.getElementById('vys-hw-done').textContent = '?';
+          document.getElementById('vys-hw-total').textContent = '';
+        });
+    })();
+    </script>
+
+
+    <article class="vys-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 230px; padding: 28px; position: relative; overflow: hidden; border: 1px solid rgba(113, 230, 255, 0.3);">
+
+      <!-- bg image -->
+      <div style="position: absolute; inset: 0; background: linear-gradient(135deg, #0d1b4b 0%, #1a0a3e 100%); filter: blur(3px) brightness(0.4); transform: scale(1.05);"></div>
+      <!-- overlay -->
+      <div style="position: absolute; inset: 0; background: linear-gradient(160deg, rgba(10,18,60,0.55) 0%, rgba(6,11,37,0.78) 100%);"></div>
+
+      <div style="position: relative; z-index: 2; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #71e6ff; margin-bottom: 12px; opacity: 0.85;">Average Score</div>
+
+      <div style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; width: 90px; height: 90px; border-radius: 50%; border: 2px solid rgba(113, 230, 255, 0.4); box-shadow: 0 0 20px rgba(113, 230, 255, 0.3), inset 0 0 15px rgba(113, 230, 255, 0.2); background: rgba(113, 230, 255, 0.05);">
+        <span id="vys-avg-score" style="font-size: 38px; font-weight: 800; color: #fff; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 20px rgba(113, 230, 255, 0.6);">...</span>
+      </div>
+
+      <div style="position: relative; z-index: 2; margin-top: 14px; font-size: 12px; color: rgba(184,193,230,0.7); letter-spacing: .04em;">điểm trung bình</div>
 
     </article>
 
+    <script>
+    (function() {
+      var apiUrl = 'https://script.google.com/macros/s/AKfycbwHZrEU54l-g-eYBqCfkuqi8YCGBa3-rSt8wAmZR5Zcvmn43N4uKfRMiWUPYj7LvMIdyw/exec?student=Th%C3%A1i%20Di%E1%BB%85m%20Trinh&format=json';
+      fetch(apiUrl)
+        .then(function(r) {
+          if (!r.ok) throw new Error('Unable to load average score');
+          return r.json();
+        })
+        .then(function(data) {
+          if (data.average !== undefined && data.average !== null && data.average !== '') {
+            document.getElementById('vys-avg-score').textContent = data.average;
+          } else {
+            throw new Error('Average score is empty');
+          }
+        })
+        .catch(function(e) {
+          console.error('Error fetching average score', e);
+          document.getElementById('vys-avg-score').textContent = '—';
+        });
+    })();
+    </script>
 
-    <article class="vys-card">
 
-      <div class="vys-number">02</div>
+    <article class="vys-card vys-next-lesson-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 230px; padding: 28px; position: relative; overflow: hidden; border: 1px solid rgba(255, 200, 87, 0.3);">
 
-      <div class="vys-icon">↗</div>
+      <!-- bg image -->
+      <div style="position: absolute; inset: 0; background: linear-gradient(135deg, #1f1a0a 0%, #1a0a3e 100%); filter: blur(3px) brightness(0.4); transform: scale(1.05);"></div>
+      <!-- overlay -->
+      <div style="position: absolute; inset: 0; background: linear-gradient(160deg, rgba(30,25,10,0.55) 0%, rgba(6,11,37,0.78) 100%);"></div>
 
-      <h3>Practise between lessons</h3>
+      <div class="vys-next-lesson-front" style="position: relative; z-index: 2; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #ffc857; margin-bottom: 20px; opacity: 0.85;">Buổi học tiếp theo</div>
 
-      <p>
-        Find your homework, exercises and personalised
-        practice activities whenever you need them.
-      </p>
+      <div class="vys-next-lesson-front" style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: center;">
+        <span id="vys-next-lesson-time" style="font-size: 38px; font-weight: 800; color: #fff; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 25px rgba(255, 200, 87, 0.6);">Đang tải...</span>
+      </div>
+
+      <div class="vys-next-lesson-front" id="vys-next-lesson-date" style="position: relative; z-index: 2; margin-top: 18px; font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, 0.85); letter-spacing: .02em;">Đang tải lịch học...</div>
+
+      <div class="vys-next-lesson-back">
+        <div class="vys-next-lesson-back-label" id="vys-next-lesson-tooltip-time">Đang tải...</div>
+        <strong id="vys-next-lesson-unit">Unit</strong>
+        <span id="vys-next-lesson-objective">Mục tiêu buổi học sẽ hiển thị tại đây.</span>
+      </div>
 
     </article>
 
-
-    <article class="vys-card">
-
-      <div class="vys-number">03</div>
-
-      <div class="vys-icon">✦</div>
-
-      <h3>Keep moving forward</h3>
-
-      <p>
-        Follow your learning journey through each unit
-        and build your English step by step.
-      </p>
-
-    </article>
+    <script>
+    (function () {
+      var endpoint = 'https://script.google.com/macros/s/AKfycbxOP6LiMQeO-Jp2_HGwj4TV5I_6Q2lpx1N0Keb9e2sNEQlV9azYE_yUV8ZEFy7xnZ6Qgw/exec';
+      var student = 'Thái Diễm Trinh';
+      var timeEl = document.getElementById('vys-next-lesson-time');
+      var dateEl = document.getElementById('vys-next-lesson-date');
+      var tooltipTimeEl = document.getElementById('vys-next-lesson-tooltip-time');
+      var unitEl = document.getElementById('vys-next-lesson-unit');
+      var objectiveEl = document.getElementById('vys-next-lesson-objective');
+      fetch(endpoint + '?student=' + encodeURIComponent(student))
+        .then(function (response) { if (!response.ok) throw new Error('Không thể tải lịch học'); return response.json(); })
+        .then(function (data) {
+          if (!data.ok || !data.lesson) throw new Error(data.error || data.message || 'Chưa có buổi học');
+          var lesson = data.lesson;
+          timeEl.textContent = lesson.time || 'Chưa xếp giờ';
+          dateEl.textContent = 'Ngày ' + (lesson.date || 'chưa cập nhật');
+          tooltipTimeEl.textContent = (lesson.date || '') + (lesson.time ? ' • ' + lesson.time : '');
+          unitEl.textContent = lesson.unitName || 'Chưa cập nhật Unit';
+          objectiveEl.textContent = 'Mục tiêu: ' + (lesson.objective || 'Chưa cập nhật');
+        })
+        .catch(function (error) {
+          console.error('Error fetching next lesson:', error);
+          timeEl.textContent = '—'; dateEl.textContent = 'Chưa tải được lịch học';
+          tooltipTimeEl.textContent = 'Không có dữ liệu'; unitEl.textContent = 'Buổi học tiếp theo';
+          objectiveEl.textContent = 'Vui lòng kiểm tra kết nối Google Sheet.';
+        });
+    })();
+    </script>
 
   </div>
 
@@ -615,7 +804,7 @@
       </div>
 
       <div class="vys-percent">
-        50%
+        0%
       </div>
 
     </div>
@@ -624,47 +813,144 @@
       <div class="vys-bar-fill"></div>
     </div>
 
+    <div class="vys-milestones">
+      <div class="vys-milestone" style="left: 0;">
+        <div>0%</div>
+        <div>5.0 IELTS</div>
+      </div>
+      <div class="vys-milestone" style="left: 25%;">
+        <div>25%</div>
+        <div>3 tháng</div>
+      </div>
+      <div class="vys-milestone" style="left: 50%;">
+        <div>50%</div>
+        <div>6 tháng</div>
+      </div>
+      <div class="vys-milestone" style="left: 75%;">
+        <div>75%</div>
+        <div>9 tháng</div>
+      </div>
+      <div class="vys-milestone" style="left: 100%;">
+        <div>100%</div>
+        <div>5.5 IELTS</div>
+      </div>
+    </div>
+
   </div>
 
 
   <!-- PATH -->
-
-  <div class="vys-path">
-
-    <div class="vys-path-line"></div>
-
-    <div class="vys-step">
-      <div class="vys-step-dot">01</div>
-      <div>
-        <strong>Assessment</strong>
-        <span>Know your level</span>
-      </div>
+  <div class="vys-path-header">
+    <h3>
+      SGK TIẾNG ANH LỚP 8
+    </h3>
+    <div>
+      Bài học đang học đến trong sách giáo khoa Tiếng Anh lớp 8
     </div>
+  </div>
 
-    <div class="vys-step">
-      <div class="vys-step-dot">02</div>
-      <div>
-        <strong>Lessons</strong>
-        <span>Learn together</span>
+  <div class="vys-path-scroll">
+    <div class="vys-path">
+
+      <div class="vys-path-line"></div>
+
+      <div class="vys-step">
+        <div class="vys-step-dot">01</div>
+        <div>
+          <strong>Unit 1</strong>
+          <span>LEISURE TIME</span>
+        </div>
       </div>
-    </div>
 
-    <div class="vys-step">
-      <div class="vys-step-dot">03</div>
-      <div>
-        <strong>Practice</strong>
-        <span>Build confidence</span>
+      <div class="vys-step">
+        <div class="vys-step-dot">02</div>
+        <div>
+          <strong>Unit 2</strong>
+          <span>LIFE IN THE COUNTRYSIDE</span>
+        </div>
       </div>
-    </div>
 
-    <div class="vys-step">
-      <div class="vys-step-dot">04</div>
-      <div>
-        <strong>Progress</strong>
-        <span>Keep growing</span>
+      <div class="vys-step vys-step-active">
+        <div class="vys-step-dot">03</div>
+        <div>
+          <strong>Unit 3</strong>
+          <span>TEENAGERS</span>
+        </div>
       </div>
-    </div>
 
+      <div class="vys-step">
+        <div class="vys-step-dot">04</div>
+        <div>
+          <strong>Unit 4</strong>
+          <span>ETHNIC GROUPS OF VIET NAM</span>
+        </div>
+      </div>
+
+      <div class="vys-step">
+        <div class="vys-step-dot">05</div>
+        <div>
+          <strong>Unit 5</strong>
+          <span>OUR CUSTOMS AND TRADITIONS</span>
+        </div>
+      </div>
+
+      <div class="vys-step">
+        <div class="vys-step-dot">06</div>
+        <div>
+          <strong>Unit 6</strong>
+          <span>LIFESTYLES</span>
+        </div>
+      </div>
+
+      <div class="vys-step">
+        <div class="vys-step-dot">07</div>
+        <div>
+          <strong>Unit 7</strong>
+          <span>ENVIRONMENTAL PROTECTION</span>
+        </div>
+      </div>
+
+      <div class="vys-step">
+        <div class="vys-step-dot">08</div>
+        <div>
+          <strong>Unit 8</strong>
+          <span>SHOPPING</span>
+        </div>
+      </div>
+
+      <div class="vys-step">
+        <div class="vys-step-dot">09</div>
+        <div>
+          <strong>Unit 9</strong>
+          <span>NATURAL DISASTERS</span>
+        </div>
+      </div>
+
+      <div class="vys-step">
+        <div class="vys-step-dot">10</div>
+        <div>
+          <strong>Unit 10</strong>
+          <span>COMMUNICATION IN THE FUTURE</span>
+        </div>
+      </div>
+
+      <div class="vys-step">
+        <div class="vys-step-dot">11</div>
+        <div>
+          <strong>Unit 11</strong>
+          <span>SCIENCE AND TECHNOLOGY</span>
+        </div>
+      </div>
+
+      <div class="vys-step">
+        <div class="vys-step-dot">12</div>
+        <div>
+          <strong>Unit 12</strong>
+          <span>LIFE ON OTHER PLANETS</span>
+        </div>
+      </div>
+
+    </div>
   </div>
 
 </section>
@@ -727,7 +1013,7 @@
       if (entries[0].isIntersecting) {
 
         setTimeout(function() {
-          progress.style.width = '50%';
+          progress.style.width = '0%';
         }, 200);
 
         progressObserver.disconnect();
