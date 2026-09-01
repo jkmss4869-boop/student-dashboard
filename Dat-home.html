@@ -835,7 +835,9 @@
     }
 
     .vys-path-scroll {
+      position: relative;
       overflow-x: auto;
+      overflow-y: hidden;
       padding-top: 15px;
       padding-bottom: 15px;
       margin-top: 10px;
@@ -862,6 +864,9 @@
       min-width: 1000px;
     }
 
+
+    /* Đường nối */
+
     .vys-path-line {
       position: absolute;
       top: 19px;
@@ -871,53 +876,315 @@
       background: var(--line);
     }
 
+    #vysEnglish8Path {
+      display: contents;
+    }
+
     .vys-step {
       position: relative;
       z-index: 2;
       flex: 1;
       text-align: center;
+      cursor: default;
     }
 
     .vys-step-dot {
       width: 39px;
       height: 39px;
       margin: 0 auto 15px;
+
       border-radius: 50%;
+
       background: #10194e;
       border: 1px solid var(--line);
+
       display: grid;
       place-items: center;
+
       font-size: 12px;
       color: var(--accent);
-      transition: all .3s ease;
+
+      transition:
+        all .3s ease;
     }
+
 
     .vys-step:hover .vys-step-dot,
     .vys-step.vys-step-active .vys-step-dot {
-      background: linear-gradient(135deg, #71e6ff, #8669ff);
+
+      background:
+        linear-gradient(135deg,
+          #71e6ff,
+          #8669ff);
+
       color: #071134;
+
       border-color: var(--accent);
+
       transform: scale(1.12);
     }
 
+
+    /* Active glow */
+
     .vys-step.vys-step-active .vys-step-dot {
-      box-shadow: 0 0 15px rgba(113, 230, 255, 0.4);
+
+      box-shadow:
+        0 0 15px rgba(113, 230, 255, 0.4);
+
     }
+
+
+    /* Active title */
 
     .vys-step.vys-step-active strong {
       color: var(--accent);
     }
 
+
     .vys-step strong {
+
       display: block;
+
       font-size: 12px;
+
     }
 
-    .vys-step span {
-      display: block;
-      margin-top: 5px;
-      font-size: 11px;
+    /* ================================
+   COMPLETED
+================================ */
+
+    .vys-step.vys-step-completed .vys-step-dot {
+
+      background:
+        rgba(113, 230, 255, 0.12);
+
+      border-color:
+        rgba(113, 230, 255, 0.45);
+
+      color: var(--accent);
+
+    }
+
+
+    .vys-step.vys-step-completed strong {
+
+      color: var(--ink);
+
+    }
+
+
+    /* ================================
+   UPCOMING
+================================ */
+
+    .vys-step.vys-step-upcoming {
+
+      opacity: 0.55;
+
+    }
+
+
+    /* =========================================================
+   VYS ENGLISH 8 — TOOLTIP
+   Tooltip nằm ngoài vùng scroll
+   ========================================================= */
+
+
+    /* ---------------------------------------------------------
+   TOOLTIP LAYER
+   --------------------------------------------------------- */
+
+    .vys-english8-tooltip-layer {
+
+      position: fixed;
+
+      z-index: 999999;
+
+      pointer-events: none;
+
+      opacity: 0;
+      visibility: hidden;
+
+      /* Animation: trượt nhẹ từ bên phải */
+      transform: translateX(15px);
+
+      transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease,
+        transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+
+    /* Khi tooltip được JS kích hoạt */
+
+    .vys-english8-tooltip-layer.is-visible {
+
+      opacity: 1;
+
+      visibility: visible;
+
+      transform: translateX(0);
+    }
+
+
+    /* ---------------------------------------------------------
+   TOOLTIP BOX
+   --------------------------------------------------------- */
+
+    .vys-english8-tooltip-layer .vys-tooltip {
+
+      position: relative;
+
+      width: max-content;
+      max-width: 260px;
+
+      padding: 12px 16px;
+
+      background: rgba(7, 11, 37, 0.95);
+
+      backdrop-filter: blur(8px);
+
+      border: 1px solid rgba(113, 230, 255, 0.35);
+
+      border-radius: 12px;
+
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(113, 230, 255, 0.15);
+
+      text-align: left;
+
+    }
+
+
+    /* ---------------------------------------------------------
+   MŨI TÊN — TOOLTIP BÊN PHẢI UNIT
+   --------------------------------------------------------- */
+
+    .vys-english8-tooltip-layer .vys-tooltip::after {
+
+      content: "";
+
+      position: absolute;
+
+      top: 24px;
+
+      left: -12px;
+
+      border-width: 6px;
+
+      border-style: solid;
+
+      border-color:
+        transparent rgba(113, 230, 255, 0.35) transparent transparent;
+    }
+
+
+    /* ---------------------------------------------------------
+   KHI TOOLTIP BỊ ĐẨY SANG TRÁI
+   --------------------------------------------------------- */
+
+    .vys-english8-tooltip-layer .vys-tooltip.vys-tooltip-left::after {
+
+      left: auto;
+
+      right: -12px;
+
+      border-color:
+        transparent transparent transparent rgba(113, 230, 255, 0.35);
+    }
+
+
+    /* ---------------------------------------------------------
+   NỘI DUNG TOOLTIP
+   --------------------------------------------------------- */
+
+    .vys-tooltip-time {
+
+      font-size: 10.5px;
+
+      color: var(--accent);
+
+      letter-spacing: 0.05em;
+
+      margin-bottom: 5px;
+
+      font-weight: 700;
+    }
+
+
+    .vys-tooltip-title {
+
+      font-size: 13.5px;
+
+      color: var(--ink);
+
+      font-weight: 700;
+
+      line-height: 1.4;
+
+      margin-bottom: 6px;
+    }
+
+
+    .vys-tooltip-obj {
+
+      font-size: 11.5px;
+
       color: var(--muted);
+
+      line-height: 1.5;
+    }
+
+
+    /* Các dòng thông tin trong tooltip */
+
+    .vys-tooltip-obj>div {
+
+      margin-top: 5px;
+    }
+
+
+    .vys-tooltip-obj>div:first-child {
+
+      margin-top: 0;
+    }
+
+
+    /* Trạng thái */
+
+    .vys-tooltip-status {
+
+      margin-top: 8px !important;
+
+      color: var(--accent);
+
+      font-weight: 700;
+    }
+
+
+    /* ---------------------------------------------------------
+   MOBILE
+   --------------------------------------------------------- */
+
+    @media (max-width: 760px) {
+
+      .vys-english8-tooltip-layer {
+
+        max-width: calc(100vw - 20px);
+
+      }
+
+
+      .vys-english8-tooltip-layer .vys-tooltip {
+
+        width: 220px;
+
+        max-width: calc(100vw - 40px);
+
+      }
+
     }
 
     /* FOOTER CTA */
@@ -1052,99 +1319,6 @@
     /* Đảm bảo vòng tròn đang hover sẽ nổi lên trên cùng, không bị vòng tròn tiếp theo đè lên tooltip */
     .vys-step:hover {
       z-index: 10;
-    }
-
-    /* VYS TOOLTIP - HIỂN THỊ BÊN PHẢI */
-    .vys-tooltip {
-      position: absolute;
-      top: -10px;
-      /* Căn mép trên của tooltip gần bằng với mép trên vòng tròn */
-      left: calc(50% + 30px);
-      /* Đẩy thẻ sang bên phải vòng tròn */
-      transform: translateX(15px);
-      /* Nằm dịch ra xa một chút để tạo đà trượt vào */
-      width: max-content;
-      max-width: 260px;
-      padding: 12px 16px;
-
-      background: rgba(7, 11, 37, 0.95);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(113, 230, 255, 0.35);
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(113, 230, 255, 0.15);
-
-      text-align: left;
-      opacity: 0;
-      visibility: hidden;
-      z-index: 100;
-      pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    /* Mũi tên trỏ sang TRÁI (chỉ ngược lại vào vòng tròn) */
-    .vys-tooltip::after {
-      content: "";
-      position: absolute;
-      top: 24px;
-      /* Căn mũi tên nằm ngang hàng với tâm vòng tròn */
-      left: -12px;
-      /* Kéo mũi tên ra rìa trái của thẻ tooltip */
-      border-width: 6px;
-      border-style: solid;
-      border-color: transparent rgba(113, 230, 255, 0.35) transparent transparent;
-    }
-
-    /* Hiệu ứng khi Hover trượt từ phải vào */
-    .vys-step:hover .vys-tooltip,
-    .vys-card:hover .vys-tooltip {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(0);
-    }
-
-    /* Typography bên trong thẻ (Giữ nguyên) */
-    .vys-tooltip-time {
-      font-size: 10.5px;
-      color: var(--accent);
-      letter-spacing: 0.05em;
-      margin-bottom: 5px;
-      font-weight: 700;
-    }
-
-    .vys-tooltip-title {
-      font-size: 13.5px;
-      color: var(--ink);
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .vys-tooltip-obj {
-      font-size: 11.5px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    /* Chỉnh lại cho Mobile: Đưa xuống dưới vòng tròn vì đt màn hình dọc không đủ chỗ chứa bên phải */
-    @media (max-width: 760px) {
-      .vys-tooltip {
-        left: 40px;
-        top: 100%;
-        transform: translateY(10px) translateX(0);
-        width: 220px;
-        margin-top: 5px;
-      }
-
-      .vys-tooltip::after {
-        left: 15px;
-        top: -12px;
-        /* Mũi tên trỏ lên trên */
-        border-color: transparent transparent rgba(113, 230, 255, 0.35) transparent;
-      }
-
-      .vys-step:hover .vys-tooltip,
-      .vys-card:hover .vys-tooltip {
-        transform: translateY(0) translateX(0);
-      }
     }
   </style>
 
@@ -1976,118 +2150,539 @@
       </div>
     </div>
 
-    <div class="vys-path-scroll">
-      <div class="vys-path">
+    <div class="vys-path-scroll" id="vysEnglish8Scroll">
 
+      <div class="vys-path">
         <div class="vys-path-line"></div>
 
-        <div class="vys-step">
-          <div class="vys-step-dot">01</div>
-          <div>
-            <strong>Unit 1</strong>
-            <span>LEISURE TIME</span>
-          </div>
+        <div id="vysEnglish8Path"></div>
+      </div>
+
+    </div>
+
+    <!-- Tooltip nằm ngoài vùng scroll -->
+    <div class="vys-english8-tooltip-layer" id="vysEnglish8TooltipLayer">
+      <div class="vys-tooltip" id="vysEnglish8Tooltip"></div>
+    </div>
+
+    <script>
+      (function () {
+
+        const API_URL =
+          'https://script.google.com/macros/s/AKfycbxL2wykqX_IcHCJH6t1LAhtopTCxq0KbceaUEWeOQlZLNIJca-9KbYjZdLcPX7Vwp5mKw/exec';
+
+
+        const path =
+          document.getElementById(
+            'vysEnglish8Path'
+          );
+
+        const tooltipLayer =
+          document.getElementById(
+            'vysEnglish8TooltipLayer'
+          );
+
+        const tooltip =
+          document.getElementById(
+            'vysEnglish8Tooltip'
+          );
+
+
+        if (
+          !path ||
+          !tooltipLayer ||
+          !tooltip
+        ) return;
+
+
+        /* ================================
+           ESCAPE HTML
+        ================================= */
+
+        function escapeHTML(value) {
+
+          return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+        }
+
+
+        /* ================================
+           STATUS CLASS
+        ================================= */
+
+        function getStatusClass(status) {
+
+          const value =
+            String(status || '')
+              .trim()
+              .toLowerCase();
+
+
+          if (value === 'đang học') {
+
+            return 'vys-step-active';
+
+          }
+
+
+          if (value === 'đã học') {
+
+            return 'vys-step-completed';
+
+          }
+
+
+          return 'vys-step-upcoming';
+
+        }
+
+
+        /* ================================
+           CREATE UNIT
+        ================================= */
+
+        function createUnit(unit) {
+
+          const number =
+            String(unit.unit_number)
+              .padStart(2, '0');
+
+
+          const statusClass =
+            getStatusClass(unit.status);
+
+
+          const step =
+            document.createElement('div');
+
+
+          step.className =
+            `vys-step ${statusClass}`;
+
+
+          step.dataset.unitId =
+            unit.unit_id;
+
+
+          step.innerHTML = `
+
+      <div class="vys-step-dot">
+        ${number}
+      </div>
+
+
+      <div>
+
+        <strong>
+          ${escapeHTML(unit.title)}
+        </strong>
+
+      </div>
+
+    `;
+
+
+          /*
+            Tooltip được tạo riêng
+            trong tooltip layer.
+          */
+
+          step.addEventListener(
+            'mouseenter',
+            function () {
+
+              showTooltip(
+                step,
+                unit
+              );
+
+            }
+          );
+
+
+          step.addEventListener(
+            'mouseleave',
+            function () {
+
+              hideTooltip();
+
+            }
+          );
+
+
+          return step;
+
+        }
+
+
+        /* ================================
+           SHOW TOOLTIP
+        ================================= */
+
+        function showTooltip(
+          step,
+          unit
+        ) {
+
+
+          tooltip.innerHTML = `
+
+      <div class="vys-tooltip-time">
+
+        ${escapeHTML(unit.start_date)}
+        →
+        ${escapeHTML(unit.end_date)}
+
+      </div>
+
+
+      <div class="vys-tooltip-title">
+
+        ${escapeHTML(unit.title)}
+        ·
+        ${escapeHTML(unit.subtitle)}
+
+      </div>
+
+
+      <div class="vys-tooltip-obj">
+
+        <div>
+
+          📚 Từ vựng:
+          <strong>
+            ${escapeHTML(
+            unit.vocabulary_count
+          )} từ
+          </strong>
+
         </div>
 
-        <div class="vys-step">
-          <div class="vys-step-dot">02</div>
-          <div>
-            <strong>Unit 2</strong>
-            <span>LIFE IN THE COUNTRYSIDE</span>
-          </div>
+
+        <div>
+
+          📝 Ngữ pháp:
+          ${escapeHTML(unit.grammar)}
+
         </div>
 
-        <div class="vys-step vys-step-active">
-          <div class="vys-step-dot">03</div>
 
-          <!-- Chèn tooltip vào đây -->
-          <div class="vys-tooltip">
-            <div class="vys-tooltip-time">29/08/2026 • 20:00</div>
-            <div class="vys-tooltip-title">Unit 3 - Review & Test 1</div>
-            <div class="vys-tooltip-obj">Mục tiêu: Ôn tập kiến thức Unit 1 & 2; Làm mini test 15 phút.</div>
-          </div>
-          <!-- Kết thúc tooltip -->
+        <div>
 
-          <div>
-            <strong>Unit 3</strong>
-            <span>TEENAGERS</span>
-          </div>
+          🔊 Phát âm:
+          ${escapeHTML(unit.pronunciation)}
+
         </div>
 
-        <div class="vys-step">
-          <div class="vys-step-dot">04</div>
-          <div>
-            <strong>Unit 4</strong>
-            <span>ETHNIC GROUPS OF VIET NAM</span>
-          </div>
-        </div>
 
-        <div class="vys-step">
-          <div class="vys-step-dot">05</div>
-          <div>
-            <strong>Unit 5</strong>
-            <span>OUR CUSTOMS AND TRADITIONS</span>
-          </div>
-        </div>
+        <div class="vys-tooltip-status">
 
-        <div class="vys-step">
-          <div class="vys-step-dot">06</div>
-          <div>
-            <strong>Unit 6</strong>
-            <span>LIFESTYLES</span>
-          </div>
-        </div>
+          ${escapeHTML(unit.status)}
 
-        <div class="vys-step">
-          <div class="vys-step-dot">07</div>
-          <div>
-            <strong>Unit 7</strong>
-            <span>ENVIRONMENTAL PROTECTION</span>
-          </div>
-        </div>
-
-        <div class="vys-step">
-          <div class="vys-step-dot">08</div>
-          <div>
-            <strong>Unit 8</strong>
-            <span>SHOPPING</span>
-          </div>
-        </div>
-
-        <div class="vys-step">
-          <div class="vys-step-dot">09</div>
-          <div>
-            <strong>Unit 9</strong>
-            <span>NATURAL DISASTERS</span>
-          </div>
-        </div>
-
-        <div class="vys-step">
-          <div class="vys-step-dot">10</div>
-          <div>
-            <strong>Unit 10</strong>
-            <span>COMMUNICATION IN THE FUTURE</span>
-          </div>
-        </div>
-
-        <div class="vys-step">
-          <div class="vys-step-dot">11</div>
-          <div>
-            <strong>Unit 11</strong>
-            <span>SCIENCE AND TECHNOLOGY</span>
-          </div>
-        </div>
-
-        <div class="vys-step">
-          <div class="vys-step-dot">12</div>
-          <div>
-            <strong>Unit 12</strong>
-            <span>LIFE ON OTHER PLANETS</span>
-          </div>
         </div>
 
       </div>
-    </div>
+
+    `;
+
+
+          /*
+            Trước tiên cho tooltip hiện
+            nhưng chưa animation.
+          */
+
+          tooltipLayer.classList.add(
+            'is-visible'
+          );
+
+
+          /*
+            Lấy vị trí Unit trên màn hình.
+          */
+
+          const rect =
+            step.getBoundingClientRect();
+
+
+          /*
+            Đo tooltip.
+          */
+
+          const tooltipRect =
+            tooltip.getBoundingClientRect();
+
+
+          const gap = 18;
+
+
+          /*
+            Mặc định:
+            tooltip nằm bên phải Unit.
+          */
+
+          let left =
+            rect.right + gap;
+
+
+          let top =
+            rect.top - 10;
+
+
+          /*
+            Nếu tooltip vượt khỏi
+            cạnh phải màn hình,
+            chuyển sang bên trái.
+          */
+
+          if (
+            left + tooltipRect.width >
+            window.innerWidth - 10
+          ) {
+
+            left =
+              rect.left -
+              tooltipRect.width -
+              gap;
+
+
+            /*
+              Đổi hướng mũi tên.
+            */
+
+            tooltip.classList.add(
+              'vys-tooltip-left'
+            );
+
+          } else {
+
+            tooltip.classList.remove(
+              'vys-tooltip-left'
+            );
+
+          }
+
+
+          /*
+            Không cho tooltip vượt
+            khỏi cạnh trái màn hình.
+          */
+
+          if (left < 10) {
+
+            left = 10;
+
+          }
+
+
+          /*
+            Không cho tooltip vượt
+            khỏi cạnh dưới màn hình.
+          */
+
+          if (
+            top + tooltipRect.height >
+            window.innerHeight - 10
+          ) {
+
+            top =
+              window.innerHeight -
+              tooltipRect.height -
+              10;
+
+          }
+
+
+          /*
+            Không cho tooltip vượt
+            khỏi cạnh trên.
+          */
+
+          if (top < 10) {
+
+            top = 10;
+
+          }
+
+
+          tooltipLayer.style.left =
+            left + 'px';
+
+
+          tooltipLayer.style.top =
+            top + 'px';
+
+        }
+
+
+        /* ================================
+           HIDE TOOLTIP
+        ================================= */
+
+        function hideTooltip() {
+
+          tooltipLayer.classList.remove(
+            'is-visible'
+          );
+
+        }
+
+
+        /* ================================
+           LOAD API
+        ================================= */
+
+        async function loadEnglish8() {
+
+          try {
+
+            const response =
+              await fetch(
+                API_URL,
+                {
+                  method: 'GET',
+                  cache: 'no-store'
+                }
+              );
+
+
+            if (!response.ok) {
+
+              throw new Error(
+                'HTTP ' +
+                response.status
+              );
+
+            }
+
+
+            const data =
+              await response.json();
+
+
+            if (!data.ok) {
+
+              throw new Error(
+                data.message ||
+                'API error'
+              );
+
+            }
+
+
+            if (
+              !Array.isArray(
+                data.units
+              )
+            ) {
+
+              throw new Error(
+                'Dữ liệu Unit không hợp lệ.'
+              );
+
+            }
+
+
+            /*
+              Xóa loading / dữ liệu cũ.
+            */
+
+            path.innerHTML = '';
+
+
+            /*
+              Render 12 Unit.
+            */
+
+            data.units.forEach(
+              function (unit) {
+
+                path.appendChild(
+                  createUnit(unit)
+                );
+
+              }
+            );
+
+
+          } catch (error) {
+
+            console.error(
+              'SGK TIẾNG ANH LỚP 8:',
+              error
+            );
+
+
+            path.innerHTML = `
+
+        <div class="vys-path-error">
+
+          Không thể tải dữ liệu
+          lộ trình học.
+
+        </div>
+
+      `;
+
+          }
+
+        }
+
+
+        /* ================================
+           UPDATE TOOLTIP ON SCROLL
+        ================================= */
+
+        const scroll =
+          document.getElementById(
+            'vysEnglish8Scroll'
+          );
+
+
+        let activeStep = null;
+
+
+        /*
+          Khi user scroll timeline,
+          nếu tooltip đang mở,
+          cập nhật lại vị trí.
+        */
+
+        if (scroll) {
+
+          scroll.addEventListener(
+            'scroll',
+            function () {
+
+              if (!activeStep) return;
+
+              /*
+                Không cần làm gì nếu
+                tooltip đã bị hide.
+              */
+
+            },
+            {
+              passive: true
+            }
+          );
+
+        }
+
+
+        /* ================================
+           LOAD
+        ================================= */
+
+        loadEnglish8();
+
+
+      })();
+    </script>
 
     <div class="vys-path-header">
       <h3>
