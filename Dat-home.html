@@ -27,21 +27,57 @@
       box-sizing: border-box;
     }
 
-    .vys-next-lesson-card { overflow: hidden; }
-    .vys-next-lesson-front { transition: transform .45s ease, opacity .28s ease; width: 100%; 
-  min-width: 100%; 
-  flex-shrink: 0; }
-    .vys-next-lesson-back {
-      position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 7px; padding: 28px; text-align: center;
-      color: var(--muted); font-size: 12px; line-height: 1.45;
-      transform: translateX(105%); transition: transform .45s cubic-bezier(.2,.8,.2,1);
+    .vys-next-lesson-card {
+      overflow: hidden;
     }
-    .vys-next-lesson-back strong { color: #fff; font-size: 18px; font-family: 'Orbitron', sans-serif; }
-    .vys-next-lesson-back-label { color: #ffc857; font-size: 11px; font-weight: 700; letter-spacing: .06em; }
-    .vys-next-lesson-card:hover .vys-next-lesson-front { transform: translateX(-125%); opacity: 0; }
-    .vys-next-lesson-card:hover .vys-next-lesson-back { transform: translateX(0); }
-    
+
+    .vys-next-lesson-front {
+      transition: transform .45s ease, opacity .28s ease;
+      width: 100%;
+      min-width: 100%;
+      flex-shrink: 0;
+    }
+
+    .vys-next-lesson-back {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 28px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      transform: translateX(105%);
+      transition: transform .45s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .vys-next-lesson-back strong {
+      color: #fff;
+      font-size: 18px;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .vys-next-lesson-back-label {
+      color: #ffc857;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+    }
+
+    .vys-next-lesson-card:hover .vys-next-lesson-front {
+      transform: translateX(-125%);
+      opacity: 0;
+    }
+
+    .vys-next-lesson-card:hover .vys-next-lesson-back {
+      transform: translateX(0);
+    }
+
 
     /* HERO */
 
@@ -272,106 +308,510 @@
     }
 
     /* PROGRESS */
+    /* =========================================================
+   VYS — YOUR ENGLISH JOURNEY
+   Progress + Interactive Lesson History
+   ========================================================= */
 
     .vys-progress-box {
+
       margin-top: 16px;
+
       padding: 35px;
+
       border-radius: 24px;
-      background: linear-gradient(115deg, #18256f, #44228e 58%, #8a306f);
+
+      background:
+        linear-gradient(115deg,
+          #18256f,
+          #44228e 58%,
+          #8a306f);
+
       border: 1px solid rgba(163, 223, 255, .3);
-      box-shadow: 0 20px 44px rgba(5, 10, 47, .3);
+
+      box-shadow:
+        0 20px 44px rgba(5, 10, 47, .3);
+
       color: white;
-      overflow: hidden;
+
+      overflow: visible;
+
       position: relative;
     }
 
+
     .vys-progress-box::after {
+
       content: "";
+
       position: absolute;
+
       width: 240px;
       height: 240px;
+
       border-radius: 50%;
+
       right: -90px;
       top: -100px;
-      background: rgba(255, 255, 255, .045);
+
+      background:
+        rgba(255, 255, 255, .045);
+
+      pointer-events: none;
     }
+
+
+    /* =========================================================
+   HEADER
+   ========================================================= */
 
     .vys-progress-top {
+
       display: flex;
+
       justify-content: space-between;
+
       align-items: center;
+
       gap: 20px;
+
+      position: relative;
+
+      z-index: 2;
     }
 
+
     .vys-progress-title {
+
       margin: 0;
+
       font-size: 22px;
+
       letter-spacing: -.02em;
     }
 
+
     .vys-progress-text {
+
       font-size: 12px;
-      color: rgba(255, 255, 255, .58);
+
+      color:
+        rgba(255, 255, 255, .58);
+
       margin-top: 7px;
     }
 
+
     .vys-percent {
+
       font-size: 34px;
+
       font-weight: 600;
+
+      white-space: nowrap;
     }
 
-    .vys-bar {
-      height: 7px;
-      margin-top: 28px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, .12);
-      overflow: hidden;
-    }
 
-    .vys-bar-fill {
-      width: 0;
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #72efff, #a990ff, #ff8bd4);
-      box-shadow: 0 0 15px rgba(113, 230, 255, .8);
-      transition: width 1.6s cubic-bezier(.22, 1, .36, 1);
-    }
+    /* =========================================================
+   PROGRESS BAR
+   ========================================================= */
 
-    .vys-milestones {
+    .vys-journey-bar-wrap {
+
       position: relative;
-      height: 35px;
-      margin-top: 15px;
-      font-size: 13px;
-      color: rgba(255, 255, 255, .8);
+
+      margin-top: 28px;
+
+      z-index: 2;
     }
 
-    .vys-milestone {
+
+    .vys-journey-bar {
+
+      height: 7px;
+
+      width: 100%;
+
+      border-radius: 20px;
+
+      background:
+        rgba(255, 255, 255, .12);
+
+      position: relative;
+
+      overflow: visible;
+    }
+
+
+    /* =========================================================
+   PROGRESS FILL
+   ========================================================= */
+
+    .vys-journey-bar-fill {
+
+      width: 0;
+
+      height: 100%;
+
+      border-radius: inherit;
+
+      background:
+        linear-gradient(90deg,
+          #72efff,
+          #a990ff,
+          #ff8bd4);
+
+      box-shadow:
+        0 0 15px rgba(113, 230, 255, .8);
+
+      transition:
+        width 1.6s cubic-bezier(.22, 1, .36, 1);
+    }
+
+
+    /* =========================================================
+   LESSON NODE CONTAINER
+   ========================================================= */
+
+    .vys-journey-lesson-nodes {
+
       position: absolute;
-      transform: translateX(-50%);
-      text-align: center;
-      top: 0;
+
+      inset: 0;
+
+      pointer-events: none;
+
+      z-index: 5;
     }
 
-    .vys-milestone:first-child {
-      transform: none;
+
+    /* =========================================================
+   LESSON NODE
+   ========================================================= */
+
+    .vys-journey-lesson-node {
+
+      position: absolute;
+
+      top: 50%;
+
+      width: 11px;
+      height: 11px;
+
+      transform:
+        translate(-50%, -50%);
+
+      border-radius: 50%;
+
+      background: white;
+
+      border:
+        2px solid rgba(255, 255, 255, .95);
+
+      box-shadow:
+        0 0 0 3px rgba(114, 239, 255, .18),
+        0 0 12px rgba(114, 239, 255, .75);
+
+      cursor: pointer;
+
+      pointer-events: auto;
+
+      z-index: 10;
+
+      transition:
+        width .2s ease,
+        height .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+    }
+
+
+    .vys-journey-lesson-node:hover {
+
+      width: 15px;
+      height: 15px;
+
+      transform:
+        translate(-50%, -50%);
+
+      box-shadow:
+        0 0 0 5px rgba(114, 239, 255, .18),
+        0 0 22px rgba(114, 239, 255, .95);
+    }
+
+
+    /* =========================================================
+   LATEST COMPLETED LESSON
+   ========================================================= */
+
+    .vys-journey-lesson-node.vys-journey-latest {
+
+      width: 13px;
+      height: 13px;
+
+      box-shadow:
+        0 0 0 4px rgba(255, 139, 212, .20),
+        0 0 18px rgba(255, 139, 212, .9);
+    }
+
+
+    .vys-journey-lesson-node.vys-journey-latest:hover {
+
+      width: 16px;
+      height: 16px;
+
+      box-shadow:
+        0 0 0 5px rgba(255, 139, 212, .20),
+        0 0 24px rgba(255, 139, 212, 1);
+    }
+
+
+    /* =========================================================
+   JOURNEY TOOLTIP
+   IMPORTANT:
+   This is NOT .vys-tooltip
+   ========================================================= */
+
+    .vys-journey-tooltip {
+
+      position: absolute;
+
+      left: 50%;
+
+      bottom: 22px;
+
+      width: 245px;
+
+      padding: 13px 15px;
+
+      border-radius: 14px;
+
+      background:
+        rgba(16, 19, 55, .97);
+
+      border:
+        1px solid rgba(255, 255, 255, .14);
+
+      box-shadow:
+        0 14px 35px rgba(0, 0, 0, .30);
+
+      color: white;
+
+      opacity: 0;
+
+      visibility: hidden;
+
+      pointer-events: none;
+
+      transform:
+        translate(-50%, 6px) scale(.96);
+
+      transition:
+        opacity .18s ease,
+        transform .18s ease,
+        visibility .18s ease;
+
+      z-index: 1000;
+
       text-align: left;
     }
 
-    .vys-milestone:last-child {
+
+    /* Show tooltip */
+
+    .vys-journey-lesson-node:hover .vys-journey-tooltip {
+
+      opacity: 1;
+
+      visibility: visible;
+
+      transform:
+        translate(-50%, 0) scale(1);
+    }
+
+
+    /* =========================================================
+   TOOLTIP CONTENT
+   ========================================================= */
+
+    .vys-journey-tooltip-date {
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      color: white;
+    }
+
+
+    .vys-journey-tooltip-time {
+
+      font-size: 10.5px;
+
+      color:
+        rgba(255, 255, 255, .5);
+
+      margin-top: 3px;
+    }
+
+
+    .vys-journey-tooltip-tags {
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 5px;
+
+      margin-top: 9px;
+    }
+
+
+    .vys-journey-tooltip-tag {
+
+      font-size: 10px;
+
+      padding:
+        4px 7px;
+
+      border-radius: 999px;
+
+      background:
+        rgba(255, 255, 255, .09);
+
+      color:
+        rgba(255, 255, 255, .72);
+    }
+
+
+    .vys-journey-tooltip-objective {
+
+      font-size: 11px;
+
+      line-height: 1.5;
+
+      color:
+        rgba(255, 255, 255, .70);
+
+      margin-top: 9px;
+    }
+
+
+    .vys-journey-tooltip-hint {
+
+      font-size: 10px;
+
+      color:
+        rgba(114, 239, 255, .78);
+
+      margin-top: 9px;
+    }
+
+
+    /* =========================================================
+   GOAL MILESTONES
+   ========================================================= */
+
+    .vys-journey-milestones {
+
+      position: relative;
+
+      height: 35px;
+
+      margin-top: 15px;
+
+      font-size: 13px;
+
+      color:
+        rgba(255, 255, 255, .8);
+
+      z-index: 2;
+    }
+
+
+    .vys-journey-milestone {
+
+      position: absolute;
+
+      transform:
+        translateX(-50%);
+
+      text-align: center;
+
+      top: 0;
+    }
+
+
+    .vys-journey-milestone:first-child {
+
       transform: none;
+
+      text-align: left;
+    }
+
+
+    .vys-journey-milestone:last-child {
+
+      transform: none;
+
       left: auto !important;
+
       right: 0;
+
       text-align: right;
     }
 
-    .vys-milestone div:first-child {
+
+    .vys-journey-milestone div:first-child {
+
       font-weight: 600;
+
       margin-bottom: 2px;
     }
 
-    .vys-milestone div:last-child {
+
+    .vys-journey-milestone div:last-child {
+
       font-size: 11px;
-      color: rgba(255, 255, 255, .5);
+
+      color:
+        rgba(255, 255, 255, .5);
+    }
+
+
+    /* =========================================================
+   MOBILE
+   ========================================================= */
+
+    @media (max-width: 600px) {
+
+      .vys-progress-box {
+
+        padding: 25px 20px;
+
+      }
+
+
+      .vys-progress-title {
+
+        font-size: 19px;
+
+      }
+
+
+      .vys-percent {
+
+        font-size: 28px;
+
+      }
+
+
+      .vys-journey-tooltip {
+
+        width: 210px;
+
+      }
+
     }
 
     /* PATH */
@@ -610,94 +1050,102 @@
     }
 
     /* Đảm bảo vòng tròn đang hover sẽ nổi lên trên cùng, không bị vòng tròn tiếp theo đè lên tooltip */
-.vys-step:hover {
-  z-index: 10;
-}
+    .vys-step:hover {
+      z-index: 10;
+    }
 
-/* VYS TOOLTIP - HIỂN THỊ BÊN PHẢI */
-.vys-tooltip {
-  position: absolute;
-  top: -10px; /* Căn mép trên của tooltip gần bằng với mép trên vòng tròn */
-  left: calc(50% + 30px); /* Đẩy thẻ sang bên phải vòng tròn */
-  transform: translateX(15px); /* Nằm dịch ra xa một chút để tạo đà trượt vào */
-  width: max-content;
-  max-width: 260px;
-  padding: 12px 16px;
-  
-  background: rgba(7, 11, 37, 0.95);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(113, 230, 255, 0.35);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(113, 230, 255, 0.15);
-  
-  text-align: left;
-  opacity: 0;
-  visibility: hidden;
-  z-index: 100;
-  pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
+    /* VYS TOOLTIP - HIỂN THỊ BÊN PHẢI */
+    .vys-tooltip {
+      position: absolute;
+      top: -10px;
+      /* Căn mép trên của tooltip gần bằng với mép trên vòng tròn */
+      left: calc(50% + 30px);
+      /* Đẩy thẻ sang bên phải vòng tròn */
+      transform: translateX(15px);
+      /* Nằm dịch ra xa một chút để tạo đà trượt vào */
+      width: max-content;
+      max-width: 260px;
+      padding: 12px 16px;
 
-/* Mũi tên trỏ sang TRÁI (chỉ ngược lại vào vòng tròn) */
-.vys-tooltip::after {
-  content: "";
-  position: absolute;
-  top: 24px; /* Căn mũi tên nằm ngang hàng với tâm vòng tròn */
-  left: -12px; /* Kéo mũi tên ra rìa trái của thẻ tooltip */
-  border-width: 6px;
-  border-style: solid;
-  border-color: transparent rgba(113, 230, 255, 0.35) transparent transparent;
-}
+      background: rgba(7, 11, 37, 0.95);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(113, 230, 255, 0.35);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(113, 230, 255, 0.15);
 
-/* Hiệu ứng khi Hover trượt từ phải vào */
-.vys-step:hover .vys-tooltip,
-.vys-card:hover .vys-tooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(0);
-}
+      text-align: left;
+      opacity: 0;
+      visibility: hidden;
+      z-index: 100;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
 
-/* Typography bên trong thẻ (Giữ nguyên) */
-.vys-tooltip-time {
-  font-size: 10.5px;
-  color: var(--accent);
-  letter-spacing: 0.05em;
-  margin-bottom: 5px;
-  font-weight: 700;
-}
+    /* Mũi tên trỏ sang TRÁI (chỉ ngược lại vào vòng tròn) */
+    .vys-tooltip::after {
+      content: "";
+      position: absolute;
+      top: 24px;
+      /* Căn mũi tên nằm ngang hàng với tâm vòng tròn */
+      left: -12px;
+      /* Kéo mũi tên ra rìa trái của thẻ tooltip */
+      border-width: 6px;
+      border-style: solid;
+      border-color: transparent rgba(113, 230, 255, 0.35) transparent transparent;
+    }
 
-.vys-tooltip-title {
-  font-size: 13.5px;
-  color: var(--ink);
-  font-weight: 700;
-  margin-bottom: 6px;
-}
+    /* Hiệu ứng khi Hover trượt từ phải vào */
+    .vys-step:hover .vys-tooltip,
+    .vys-card:hover .vys-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
 
-.vys-tooltip-obj {
-  font-size: 11.5px;
-  color: var(--muted);
-  line-height: 1.5;
-}
+    /* Typography bên trong thẻ (Giữ nguyên) */
+    .vys-tooltip-time {
+      font-size: 10.5px;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
 
-/* Chỉnh lại cho Mobile: Đưa xuống dưới vòng tròn vì đt màn hình dọc không đủ chỗ chứa bên phải */
-@media (max-width: 760px) {
-  .vys-tooltip {
-    left: 40px; 
-    top: 100%;
-    transform: translateY(10px) translateX(0);
-    width: 220px;
-    margin-top: 5px;
-  }
-  .vys-tooltip::after {
-    left: 15px; 
-    top: -12px; /* Mũi tên trỏ lên trên */
-    border-color: transparent transparent rgba(113, 230, 255, 0.35) transparent;
-  }
-  .vys-step:hover .vys-tooltip,
-  .vys-card:hover .vys-tooltip {
-    transform: translateY(0) translateX(0);
-  }
-}
+    .vys-tooltip-title {
+      font-size: 13.5px;
+      color: var(--ink);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .vys-tooltip-obj {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Chỉnh lại cho Mobile: Đưa xuống dưới vòng tròn vì đt màn hình dọc không đủ chỗ chứa bên phải */
+    @media (max-width: 760px) {
+      .vys-tooltip {
+        left: 40px;
+        top: 100%;
+        transform: translateY(10px) translateX(0);
+        width: 220px;
+        margin-top: 5px;
+      }
+
+      .vys-tooltip::after {
+        left: 15px;
+        top: -12px;
+        /* Mũi tên trỏ lên trên */
+        border-color: transparent transparent rgba(113, 230, 255, 0.35) transparent;
+      }
+
+      .vys-step:hover .vys-tooltip,
+      .vys-card:hover .vys-tooltip {
+        transform: translateY(0) translateX(0);
+      }
+    }
   </style>
 
 
@@ -881,15 +1329,17 @@
           style="position: relative; z-index: 2; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #ffc857; margin-bottom: 20px; opacity: 0.85;">
           Buổi học tiếp theo</div>
 
-        <div class="vys-next-lesson-front" style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: center;">
+        <div class="vys-next-lesson-front"
+          style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: center;">
           <span id="vys-next-lesson-time"
             style="font-size: 38px; font-weight: 800; color: #fff; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 25px rgba(255, 200, 87, 0.6);">20:00
-            </span>
+          </span>
         </div>
 
         <div class="vys-next-lesson-front"
           style="position: relative; z-index: 2; margin-top: 18px; font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, 0.85); letter-spacing: .02em;">
-          <span id="vys-next-lesson-date">Đang tải lịch học...</span></div>
+          <span id="vys-next-lesson-date">Đang tải lịch học...</span>
+        </div>
 
         <div class="vys-next-lesson-back">
           <div class="vys-next-lesson-back-label" id="vys-next-lesson-tooltip-time">Đang tải...</div>
@@ -936,58 +1386,584 @@
 
     </div>
 
-
     <!-- PROGRESS -->
-
-    <div class="vys-progress-box">
+    <div class="vys-progress-box" id="vys-journey-progress">
 
       <div class="vys-progress-top">
-
         <div>
           <h3 class="vys-progress-title">
             Your English journey
           </h3>
 
-          <div class="vys-progress-text">
+          <div class="vys-progress-text" id="vys-journey-subtitle">
             Current learning progress
           </div>
         </div>
 
-        <div class="vys-percent">
+        <div class="vys-percent" id="vys-journey-percent">
           0%
         </div>
+      </div>
+
+      <!-- SINGLE PROGRESS TRACK -->
+      <div class="vys-journey-bar-wrap">
+
+        <div class="vys-journey-bar">
+
+          <!-- Progress fill -->
+          <div class="vys-journey-bar-fill" id="vys-journey-bar-fill">
+          </div>
+
+          <!-- Completed lesson nodes -->
+          <div class="vys-journey-lesson-nodes" id="vys-journey-lesson-nodes">
+          </div>
+
+        </div>
 
       </div>
 
-      <div class="vys-bar">
-        <div class="vys-bar-fill"></div>
-      </div>
+      <!-- GOAL MILESTONES -->
+      <div class="vys-journey-milestones">
 
-      <div class="vys-milestones">
-        <div class="vys-milestone" style="left: 0;">
+        <div class="vys-journey-milestone" style="left: 0;">
+
           <div>0%</div>
           <div>5.0 IELTS</div>
+
         </div>
-        <div class="vys-milestone" style="left: 25%;">
+
+        <div class="vys-journey-milestone" style="left: 25%;">
+
           <div>25%</div>
           <div>3 tháng</div>
+
         </div>
-        <div class="vys-milestone" style="left: 50%;">
+
+        <div class="vys-journey-milestone" style="left: 50%;">
+
           <div>50%</div>
           <div>6 tháng</div>
+
         </div>
-        <div class="vys-milestone" style="left: 75%;">
+
+        <div class="vys-journey-milestone" style="left: 75%;">
+
           <div>75%</div>
           <div>9 tháng</div>
+
         </div>
-        <div class="vys-milestone" style="left: 100%;">
+
+        <div class="vys-journey-milestone" style="left: 100%;">
+
           <div>100%</div>
           <div>5.5 IELTS</div>
+
         </div>
+
       </div>
 
     </div>
 
+    <script>
+      (function () {
+
+        /* =====================================================
+           VYS — YOUR ENGLISH JOURNEY
+           ===================================================== */
+
+        var journeyBox =
+          document.getElementById('vys-journey-progress');
+
+        /*
+         * Nếu trang này không có Journey thì dừng.
+         * Không ảnh hưởng bất kỳ phần nào khác.
+         */
+        if (!journeyBox) return;
+
+
+        /* =====================================================
+           CONFIG
+           ===================================================== */
+
+        var API =
+          'https://script.google.com/macros/s/AKfycbwK9_U_Juc0agUlyNAScGHG66T4zZbIumtZTH3XWpFcljMCwwKxpl-SeTE2tYckzyTH4w/exec';
+
+        var STUDENT =
+          'Dương Gia Đạt';
+
+
+        /* =====================================================
+           ELEMENTS
+           ===================================================== */
+
+        var percentEl =
+          document.getElementById(
+            'vys-journey-percent'
+          );
+
+        var subtitleEl =
+          document.getElementById(
+            'vys-journey-subtitle'
+          );
+
+        var fillEl =
+          document.getElementById(
+            'vys-journey-bar-fill'
+          );
+
+        var nodesEl =
+          document.getElementById(
+            'vys-journey-lesson-nodes'
+          );
+
+
+        /*
+         * Nếu thiếu element quan trọng,
+         * không làm gì thêm.
+         */
+        if (
+          !percentEl ||
+          !fillEl ||
+          !nodesEl
+        ) {
+          return;
+        }
+
+
+        /* =====================================================
+           FETCH DATA
+           ===================================================== */
+
+        fetch(
+          API +
+          '?student=' +
+          encodeURIComponent(STUDENT)
+        )
+
+          .then(function (response) {
+
+            if (!response.ok) {
+
+              throw new Error(
+                'Không thể kết nối Google Apps Script.'
+              );
+
+            }
+
+            return response.json();
+
+          })
+
+          .then(function (data) {
+
+            if (!data.ok) {
+
+              throw new Error(
+                data.error ||
+                'API trả về lỗi.'
+              );
+
+            }
+
+
+            /* =================================================
+               DATA
+               ================================================= */
+
+            var journey =
+              data.journey || {};
+
+            var lessons =
+              Array.isArray(data.lessons)
+                ? data.lessons
+                : [];
+
+
+            var totalLessons =
+              Number(journey.totalLessons) || 0;
+
+            var completedLessons =
+              Number(journey.completedLessons) || 0;
+
+            var progress =
+              Number(journey.progress) || 0;
+
+
+            /*
+             * Đảm bảo progress luôn 0–100
+             */
+            progress =
+              Math.max(
+                0,
+                Math.min(
+                  100,
+                  progress
+                )
+              );
+
+
+            /* =================================================
+               HEADER
+               ================================================= */
+
+            percentEl.textContent =
+              Math.round(progress) + '%';
+
+
+            if (subtitleEl) {
+
+              if (totalLessons > 0) {
+
+                subtitleEl.textContent =
+                  completedLessons +
+                  ' / ' +
+                  totalLessons +
+                  ' lessons completed';
+
+              } else {
+
+                subtitleEl.textContent =
+                  'Current learning progress';
+
+              }
+
+            }
+
+
+            /* =================================================
+               CLEAR OLD NODES
+               ================================================= */
+
+            nodesEl.innerHTML = '';
+
+
+            /* =================================================
+               CREATE LESSON NODES
+               ================================================= */
+
+            lessons.forEach(function (lesson, index) {
+
+              var sequence =
+                Number(lesson.sequence);
+
+
+              var position;
+
+
+              /*
+               * Node position dựa trên STT buổi.
+               */
+              if (
+                totalLessons > 0 &&
+                !isNaN(sequence)
+              ) {
+
+                position =
+                  (sequence / totalLessons) * 100;
+
+              }
+
+              /*
+               * Fallback nếu API không có STT.
+               */
+              else if (lessons.length === 1) {
+
+                position =
+                  progress;
+
+              }
+
+              else {
+
+                position =
+                  (index /
+                    (lessons.length - 1)
+                  ) * progress;
+
+              }
+
+
+              position =
+                Math.max(
+                  0,
+                  Math.min(
+                    100,
+                    position
+                  )
+                );
+
+
+              /* =================================================
+                 NODE
+                 ================================================= */
+
+              var node =
+                document.createElement('div');
+
+              node.className =
+                'vys-journey-lesson-node';
+
+              node.style.left =
+                position + '%';
+
+
+              /*
+               * Buổi hoàn thành gần nhất
+               */
+              if (
+                index ===
+                lessons.length - 1
+              ) {
+
+                node.classList.add(
+                  'vys-journey-latest'
+                );
+
+              }
+
+
+              /* =================================================
+                 TOOLTIP
+                 ================================================= */
+
+              var tooltip =
+                document.createElement('div');
+
+              tooltip.className =
+                'vys-journey-tooltip';
+
+
+              /* DATE */
+
+              var date =
+                document.createElement('div');
+
+              date.className =
+                'vys-journey-tooltip-date';
+
+              date.textContent =
+                lesson.date ||
+                'Chưa cập nhật ngày';
+
+
+              /* TIME */
+
+              var time =
+                document.createElement('div');
+
+              time.className =
+                'vys-journey-tooltip-time';
+
+              time.textContent =
+                lesson.time ||
+                'Chưa cập nhật giờ';
+
+
+              /* TAGS */
+
+              var tags =
+                document.createElement('div');
+
+              tags.className =
+                'vys-journey-tooltip-tags';
+
+
+              if (lesson.sequence) {
+
+                var lessonTag =
+                  document.createElement('span');
+
+                lessonTag.className =
+                  'vys-journey-tooltip-tag';
+
+                lessonTag.textContent =
+                  'Buổi ' +
+                  lesson.sequence;
+
+                tags.appendChild(
+                  lessonTag
+                );
+
+              }
+
+
+              if (lesson.unitName) {
+
+                var unitTag =
+                  document.createElement('span');
+
+                unitTag.className =
+                  'vys-journey-tooltip-tag';
+
+                unitTag.textContent =
+                  lesson.unitName;
+
+                tags.appendChild(
+                  unitTag
+                );
+
+              }
+
+
+              if (lesson.cambridgeCode) {
+
+                var cambridgeTag =
+                  document.createElement('span');
+
+                cambridgeTag.className =
+                  'vys-journey-tooltip-tag';
+
+                cambridgeTag.textContent =
+                  lesson.cambridgeCode;
+
+                tags.appendChild(
+                  cambridgeTag
+                );
+
+              }
+
+
+              /* OBJECTIVE */
+
+              var objective =
+                document.createElement('div');
+
+              objective.className =
+                'vys-journey-tooltip-objective';
+
+              objective.textContent =
+                lesson.objective ||
+                'Chưa cập nhật mục tiêu';
+
+
+              /* HINT */
+
+              var hint =
+                document.createElement('div');
+
+              hint.className =
+                'vys-journey-tooltip-hint';
+
+
+              if (lesson.reportUrl) {
+
+                hint.textContent =
+                  'Click to view lesson report ↗';
+
+              } else {
+
+                hint.textContent =
+                  'Lesson report chưa được cập nhật';
+
+              }
+
+
+              /* =================================================
+                 ASSEMBLE TOOLTIP
+                 ================================================= */
+
+              tooltip.appendChild(date);
+
+              tooltip.appendChild(time);
+
+              if (tags.children.length) {
+
+                tooltip.appendChild(tags);
+
+              }
+
+              tooltip.appendChild(objective);
+
+              tooltip.appendChild(hint);
+
+
+              node.appendChild(
+                tooltip
+              );
+
+
+              /* =================================================
+                 CLICK → GOOGLE DOCS
+                 ================================================= */
+
+              node.addEventListener(
+                'click',
+                function (event) {
+
+                  event.stopPropagation();
+
+
+                  if (
+                    !lesson.reportUrl
+                  ) {
+
+                    return;
+
+                  }
+
+
+                  window.open(
+                    lesson.reportUrl,
+                    '_blank',
+                    'noopener,noreferrer'
+                  );
+
+                }
+              );
+
+
+              nodesEl.appendChild(
+                node
+              );
+
+            });
+
+
+            /* =================================================
+               ANIMATE PROGRESS
+               ================================================= */
+
+            setTimeout(function () {
+
+              fillEl.style.width =
+                progress + '%';
+
+            }, 200);
+
+          })
+
+
+          /* =====================================================
+             ERROR
+             ===================================================== */
+
+          .catch(function (error) {
+
+            console.error(
+              'Your English Journey:',
+              error
+            );
+
+            percentEl.textContent =
+              '—';
+
+            if (subtitleEl) {
+
+              subtitleEl.textContent =
+                'Unable to load learning progress';
+
+            }
+
+            fillEl.style.width =
+              '0%';
+
+            nodesEl.innerHTML =
+              '';
+
+          });
+
+      })();
+    </script>
 
     <!-- PATH -->
 
@@ -1218,19 +2194,21 @@
 
   </section>
 
-
   <script>
-
     (function () {
 
-      const root = document.getElementById('vys-learning-journey');
+      /* =====================================================
+         VYS — GLOBAL CARD ANIMATION
+         Chỉ xử lý animation cho các card
+         ===================================================== */
 
-      if (!root) return;
+      var cards = document.querySelectorAll('.vys-card');
 
-      const cards = root.querySelectorAll('.vys-card');
-      const progress = root.querySelector('.vys-bar-fill');
+      if (!cards.length) return;
 
-      const observer = new IntersectionObserver(
+
+      var observer = new IntersectionObserver(
+
         function (entries) {
 
           entries.forEach(function (entry) {
@@ -1239,44 +2217,32 @@
 
               entry.target.classList.add('vys-visible');
 
+              /*
+               * Card đã xuất hiện thì không cần
+               * observer lại nữa.
+               */
+              observer.unobserve(entry.target);
+
             }
 
           });
 
         },
+
         {
           threshold: 0.15
         }
+
       );
+
 
       cards.forEach(function (card) {
+
         observer.observe(card);
+
       });
 
-
-      const progressObserver = new IntersectionObserver(
-        function (entries) {
-
-          if (entries[0].isIntersecting) {
-
-            setTimeout(function () {
-              progress.style.width = '0%';
-            }, 200);
-
-            progressObserver.disconnect();
-
-          }
-
-        },
-        {
-          threshold: 0.5
-        }
-      );
-
-      progressObserver.observe(progress);
-
     })();
-
   </script>
 
 </div>
