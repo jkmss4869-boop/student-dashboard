@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body {
+        font-family: sans-serif;
+        background-color: #f4f7f6;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px;
+      }
+      h2 {
+        color: #333;
+        margin-bottom: 30px;
+      }
+      .exercise-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        max-width: 400px;
+      }
+      .exercise-button {
+        background-color: #1a73e8;
+        color: white;
+        padding: 15px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+        text-align: center;
+        text-decoration: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      }
+      .exercise-button:hover {
+        background-color: #1557b0;
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Danh sách bài tập - <span id="unit-title">Đang tải...</span></h2>
+    
+    <div class="exercise-list" id="button-container">
+       <!-- Các nút bấm sẽ được tạo ở đây -->
+    </div>
+
+    <script>
+      // Lấy unit_id từ backend
+      var unitId = "<?= currentUnitId ?>";
+      
+      // Cập nhật tiêu đề (có thể tùy chỉnh thêm để lấy tên Unit đẹp hơn)
+      document.getElementById('unit-title').innerText = unitId.toUpperCase();
+
+      // Gọi hàm lấy dữ liệu từ Apps Script
+      google.script.run.withSuccessHandler(renderButtons).getExercisesForUnit(unitId);
+
+      function renderButtons(exercises) {
+        var container = document.getElementById('button-container');
+        container.innerHTML = ''; // Xóa thông báo đang tải
+
+        if (exercises.length === 0) {
+          container.innerHTML = "<p>Chưa có bài tập nào cho Unit này.</p>";
+          return;
+        }
+
+        exercises.forEach(function(ex) {
+          var btn = document.createElement('a'); // Dùng thẻ <a> để dễ chuyển hướng
+          btn.className = 'exercise-button';
+          btn.innerText = ex.title;
+          btn.href = ex.link; 
+          // Mở trong tab hiện tại (để học sinh vẫn ở trong không gian học)
+          // Nếu muốn mở tab mới, dùng: btn.target = "_blank";
+          
+          container.appendChild(btn);
+        });
+      }
+    </script>
+  </body>
+</html>

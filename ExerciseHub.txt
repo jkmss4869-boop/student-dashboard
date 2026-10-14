@@ -1,0 +1,33 @@
+function doGet(e) {
+  // Nhận unit_id từ URL của trang Dashboard truyền sang. Ví dụ: ?unit_id=unit_3
+  var unitId = e.parameter.unit_id; 
+
+  // Nếu không có unit_id, hiển thị thông báo lỗi hoặc trang mặc định
+  if (!unitId) {
+    return HtmlService.createHtmlOutput("<h1>Vui lòng chọn một Unit từ Dashboard.</h1>");
+  }
+
+  var template = HtmlService.createTemplateFromFile('ExerciseList');
+  template.currentUnitId = unitId; // Gửi unit_id sang HTML
+  return template.evaluate()
+                 .setTitle('Danh sách bài tập')
+                 .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+// Hàm lấy dữ liệu bài tập dựa vào unit_id
+function getExercisesForUnit(unitId) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Unit_Sections');
+  var data = sheet.getDataRange().getValues();
+  var exercises = [];
+
+  // Duyệt qua dữ liệu từ dòng thứ 2 (bỏ dòng tiêu đề)
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0] === unitId) {
+      exercises.push({
+        title: data[i][1], // Cột section_title
+        link: data[i][2]   // Cột section_link
+      });
+    }
+  }
+  return exercises;
+}
