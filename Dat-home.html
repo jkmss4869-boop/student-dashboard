@@ -2510,10 +2510,12 @@
           step.dataset.unitId =
             unit.unit_id;
 
-          const unitLink =
+          const sheetUnitLink =
             typeof unit.unit_link === 'string'
               ? unit.unit_link.trim()
               : '';
+          const unitLink = sheetUnitLink ||
+            `https://script.google.com/macros/s/AKfycbwIXDQrANtvLjdbqy6PdqUu_CVu-6NPG_EYEig0QIw0U_MXsVKOsc-rBSnIWUyn9UHzbw/exec?unit_id=${encodeURIComponent(unit.unit_id || '')}`;
           const hasUnitLink =
             /^https?:\/\//i.test(unitLink);
 
