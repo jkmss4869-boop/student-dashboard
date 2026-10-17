@@ -1024,6 +1024,15 @@
       cursor: default;
     }
 
+    .vys-step-linked {
+      cursor: pointer;
+    }
+
+    .vys-step-linked:focus-visible .vys-step-dot {
+      outline: 2px solid #71e6ff;
+      outline-offset: 4px;
+    }
+
     .vys-step-dot {
       width: 39px;
       height: 39px;
@@ -2498,6 +2507,34 @@
 
           step.dataset.unitId =
             unit.unit_id;
+
+          const sheetUnitLink =
+            typeof unit.unit_link === 'string'
+              ? unit.unit_link.trim()
+              : '';
+          const unitLink = sheetUnitLink ||
+            `https://script.google.com/macros/s/AKfycbwIXDQrANtvLjdbqy6PdqUu_CVu-6NPG_EYEig0QIw0U_MXsVKOsc-rBSnIWUyn9UHzbw/exec?unit_id=${encodeURIComponent(unit.unit_id || '')}`;
+          const hasUnitLink =
+            /^https?:\/\//i.test(unitLink);
+
+          if (hasUnitLink) {
+            step.classList.add('vys-step-linked');
+            step.setAttribute('role', 'link');
+            step.tabIndex = 0;
+            step.setAttribute('aria-label', `${unit.title} – mở nội dung bài học`);
+
+            const openUnitLink = function () {
+              window.open(unitLink, '_blank', 'noopener,noreferrer');
+            };
+
+            step.addEventListener('click', openUnitLink);
+            step.addEventListener('keydown', function (event) {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openUnitLink();
+              }
+            });
+          }
 
 
           step.innerHTML = `
