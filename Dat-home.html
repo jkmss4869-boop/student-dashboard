@@ -1562,6 +1562,49 @@
       }
 
     }
+
+    /* Keep the dashboard readable inside Google Sites' narrow mobile embed. */
+    @media (max-width: 760px) {
+      #vys-learning-journey {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: clip;
+      }
+      #vys-learning-journey .vys-hero { min-height: 350px; padding: 48px 22px; }
+      #vys-learning-journey .vys-title {
+        font-size: clamp(32px, 9vw, 48px);
+        overflow-wrap: anywhere;
+      }
+      #vys-learning-journey .vys-subtitle { font-size: 14px; line-height: 1.65; }
+      #vys-learning-journey .vys-section { padding: 42px 18px; }
+      #vys-learning-journey .vys-section-head {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+      #vys-learning-journey .vys-section-copy { max-width: none; }
+      #vys-learning-journey .vys-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+      }
+      #vys-learning-journey .vys-grid > * { min-width: 0; width: 100%; }
+      #vys-learning-journey .vys-grid > .vys-card {
+        min-height: 190px;
+        padding: 22px !important;
+      }
+      #vys-learning-journey .vys-progress { margin: 0 14px 22px; padding: 26px 18px; }
+    }
+    @media (max-width: 380px) {
+      #vys-learning-journey .vys-section { padding-right: 14px; padding-left: 14px; }
+      #vys-learning-journey .vys-progress {
+        margin-right: 10px;
+        margin-left: 10px;
+        padding-right: 14px;
+        padding-left: 14px;
+      }
+    }
   </style>
 
 
@@ -3056,18 +3099,33 @@
     </div>
   </section>
   <style>
-    #vys-latest-report-doc {
-      display: block;
+    .vys-latest-report-frame {
       width: 100%;
       height: min(78vh, 900px);
       min-height: 620px;
-      border: 0;
+      overflow: hidden;
       border-radius: 14px;
       background: #171923;
-      filter: invert(.98) hue-rotate(180deg);
+    }
+    #vys-latest-report-doc {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #171923;
+      filter: invert(.9) hue-rotate(180deg);
     }
     @media (max-width: 760px) {
-      #vys-latest-report-doc { height: 72vh; min-height: 500px; }
+      .vys-latest-report-frame {
+        height: 72vh;
+        min-height: 480px;
+      }
+      #vys-latest-report-doc {
+        width: 165%;
+        height: 120vh;
+        transform: scale(.606);
+        transform-origin: top left;
+      }
     }
   </style>
   <script>
@@ -3110,8 +3168,11 @@
           frame.src = 'https://docs.google.com/document/d/' + encodeURIComponent(documentId[1]) + '/preview';
           frame.title = 'Latest Learning Session Report';
           frame.loading = 'lazy';
+          var frameWrap = document.createElement('div');
+          frameWrap.className = 'vys-latest-report-frame';
+          frameWrap.appendChild(frame);
           container.innerHTML = '';
-          container.appendChild(frame);
+          container.appendChild(frameWrap);
         })
         .catch(function (error) {
           console.error('Latest Learning Session Report:', error);
