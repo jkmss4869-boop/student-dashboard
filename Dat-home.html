@@ -1599,7 +1599,7 @@
   </section>
 
 
-  <!-- JOURNEY -->
+<!-- JOURNEY -->
 
   <section class="vys-section">
 
@@ -1619,7 +1619,6 @@
       </p>
 
     </div>
-
 
     <div class="vys-grid">
 
@@ -1802,7 +1801,7 @@
 
     </div>
 
-    <!-- PROGRESS -->
+<!-- PROGRESS -->
     <div class="vys-progress-box" id="vys-journey-progress">
 
       <div class="vys-progress-top">
@@ -3044,9 +3043,85 @@
   </section>
 
 
-  <!-- TABLE -->
+  <!-- LATEST LEARNING SESSION REPORT -->
+  <section class="vys-progress" id="vys-latest-report">
+    <div class="vys-progress-header">
+      <div>
+        <h2>Latest Learning Session Report</h2>
+        <p>Báo cáo buổi học gần nhất</p>
+      </div>
+    </div>
+    <div id="vys-latest-report-content">
+      <div class="vys-progress-loading">Đang tải báo cáo buổi học gần nhất...</div>
+    </div>
+  </section>
+  <style>
+    #vys-latest-report-doc {
+      display: block;
+      width: 100%;
+      height: min(78vh, 900px);
+      min-height: 620px;
+      border: 0;
+      border-radius: 14px;
+      background: #171923;
+      filter: invert(.98) hue-rotate(180deg);
+    }
+    @media (max-width: 760px) {
+      #vys-latest-report-doc { height: 72vh; min-height: 500px; }
+    }
+  </style>
+  <script>
+    (function () {
+      var API = 'https://script.google.com/macros/s/AKfycbwK9_U_Juc0agUlyNAScGHG66T4zZbIumtZTH3XWpFcljMCwwKxpl-SeTE2tYckzyTH4w/exec';
+      var STUDENT = 'Dương Gia Đạt';
+      var container = document.getElementById('vys-latest-report-content');
+      if (!container) return;
 
-  <section class="vys-progress" id="vys-progress">
+      function showMessage(message) {
+        container.innerHTML = '';
+        var notice = document.createElement('div');
+        notice.className = 'vys-progress-error';
+        notice.textContent = message;
+        container.appendChild(notice);
+      }
+
+      fetch(API + '?student=' + encodeURIComponent(STUDENT))
+        .then(function (response) {
+          if (!response.ok) throw new Error('Không thể tải lesson report.');
+          return response.json();
+        })
+        .then(function (data) {
+          if (!data.ok) throw new Error(data.error || 'Không thể tải lesson report.');
+          var lessons = Array.isArray(data.lessons) ? data.lessons : [];
+          var lesson = lessons.length ? lessons[lessons.length - 1] : null;
+          if (!lesson || !lesson.reportUrl) {
+            showMessage('Lesson report chưa được cập nhật.');
+            return;
+          }
+
+          var documentId = lesson.reportUrl.match(/(?:\/document\/d\/|[?&]id=)([^/?#&]+)/);
+          if (!documentId) {
+            showMessage('Không nhận diện được link lesson report.');
+            return;
+          }
+
+          var frame = document.createElement('iframe');
+          frame.id = 'vys-latest-report-doc';
+          frame.src = 'https://docs.google.com/document/d/' + encodeURIComponent(documentId[1]) + '/preview';
+          frame.title = 'Latest Learning Session Report';
+          frame.loading = 'lazy';
+          container.innerHTML = '';
+          container.appendChild(frame);
+        })
+        .catch(function (error) {
+          console.error('Latest Learning Session Report:', error);
+          showMessage('Chưa thể tải báo cáo buổi học gần nhất.');
+        });
+    })();
+  </script>
+<!-- TABLE -->
+
+<section class="vys-progress" id="vys-progress">
 
     <div class="vys-progress-header">
       <div>
