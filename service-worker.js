@@ -1,8 +1,9 @@
-const CACHE_NAME = 'student-dashboard-v1';
+const CACHE_NAME = 'student-dashboard-v2';
 const APP_FILES = [
   './',
   './index.html',
   './manifest.webmanifest',
+  './pwa-install.js',
   './Dat-home.html',
   './Trinh-home.html',
   './Minh-home.html',
