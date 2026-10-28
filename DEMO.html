@@ -3216,6 +3216,7 @@
     }
     .vys-report-meta { margin-bottom: 16px; line-height: 1.7; }
     .vys-report-meta p { margin: 0 0 8px; }
+    .vys-report-meta p { white-space: pre-wrap; }
     .vys-report-meta p:last-child { margin-bottom: 0; }
     .vys-report-table { width: 100%; border-collapse: collapse; font-size: 13px; }
     .vys-report-table th, .vys-report-table td {
@@ -3267,10 +3268,17 @@
   </style>
   <script>
     (function () {
-      // Add the deployed GAS-report Web App URL here after deployment.
-      var REPORT_API_URL = 'https://script.google.com/macros/s/AKfycbwIXDQrANtvLjdbqy6PdqUu_CVu-6NPG_EYEig0QIw0U_MXsVKOsc-rBSnIWUyn9UHzbw/exec';
-      var JOURNEY_API_URL = 'https://script.google.com/macros/s/AKfycbwK9_U_Juc0agUlyNAScGHG66T4zZbIumtZTH3XWpFcljMCwwKxpl-SeTE2tYckzyTH4w/exec';
-      var STUDENT = 'DEMO';
+      // Fixed sample data for the parent guide; this page does not load live student reports.
+      var DEMO_REPORT = {
+        date: '26/10/2026',
+        objective: '- Hoàn thành bài tập Pronunciation, a closer look 1, a closer look 2.\n- Luyện tập sử dụng từ vựng của unit 5 vào nói và viết.',
+        columns: ['Thời gian', 'Học sinh', 'Tên bài học', 'Loại bài tập', 'Điểm đạt', 'Tổng điểm', 'Trung bình (%)'],
+        rows: [
+          { time: '26/10/2026 14:19:52', student: 'DEMO', lesson: 'e9u5pronunciation', exerciseType: 'Speech Reflex', score: '105', totalScore: '150', average: '70%' },
+          { time: '26/10/2026 14:07:58', student: 'DEMO', lesson: 'Unit 5 - A CLOSER LOOK 1', exerciseType: 'Quiz - Exercises 1, 2', score: '11', totalScore: '11', average: '100%' },
+          { time: '26/10/2026 14:41:38', student: 'DEMO', lesson: 'A CLOSER LOOK 2 - Grammar', exerciseType: 'HTML_A_Closer_Look_2', score: '23', totalScore: '25', average: '92%' }
+        ]
+      };
       var container = document.getElementById('vys-latest-report-content');
       if (!container) return;
 
@@ -3288,24 +3296,6 @@
         element.textContent = value;
         parent.appendChild(element);
         return element;
-      }
-      function documentId(url) {
-        var match = (url || '').match(/(?:\/document\/d\/|[?&]id=)([^/?#&]+)/);
-        return match ? match[1] : '';
-      }
-      function renderPreview(url) {
-        var id = documentId(url);
-        if (!id) { showMessage('Không nhận diện được link lesson report.'); return; }
-        var frame = document.createElement('iframe');
-        frame.id = 'vys-latest-report-doc';
-        frame.src = 'https://docs.google.com/document/d/' + encodeURIComponent(id) + '/preview';
-        frame.title = 'Latest Learning Session Report';
-        frame.loading = 'lazy';
-        var wrap = document.createElement('div');
-        wrap.className = 'vys-latest-report-frame';
-        wrap.appendChild(frame);
-        container.innerHTML = '';
-        container.appendChild(wrap);
       }
       function renderReport(report) {
         if (!report) { showMessage('Lesson report chưa được cập nhật.'); return; }
@@ -3354,25 +3344,7 @@
           container.appendChild(production);
         }
       }
-      function loadPreviewFallback() {
-        fetch(JOURNEY_API_URL + '?student=' + encodeURIComponent(STUDENT))
-          .then(function (response) { if (!response.ok) throw new Error('Không thể tải report.'); return response.json(); })
-          .then(function (data) {
-            var lessons = Array.isArray(data.lessons) ? data.lessons : [];
-            var latest = lessons.length ? lessons[lessons.length - 1] : null;
-            if (latest && latest.reportUrl) renderPreview(latest.reportUrl);
-            else showMessage('Chưa có báo cáo buổi học gần nhất.');
-          })
-          .catch(function () { showMessage('Chưa thể tải báo cáo buổi học gần nhất.'); });
-      }
-      if (!REPORT_API_URL) { loadPreviewFallback(); return; }
-      fetch(REPORT_API_URL + '?student=' + encodeURIComponent(STUDENT) + '&format=report')
-        .then(function (response) { if (!response.ok) throw new Error('Không thể tải report data.'); return response.json(); })
-        .then(function (data) { if (!data.ok) throw new Error(data.error || 'Không thể tải report data.'); renderReport(data.report); })
-        .catch(function (error) {
-          console.error('Latest Learning Session Report:', error);
-          loadPreviewFallback();
-        });
+      renderReport(DEMO_REPORT);
     })();
   </script>
 <!-- TABLE -->
