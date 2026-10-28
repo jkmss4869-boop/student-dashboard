@@ -1,0 +1,1434 @@
+// ============================================================
+// VYS - UNIFIED STUDENT TRACKER WEB APP
+// Reports, exercises, scores, and next-lesson calendar routes
+// ============================================================
+
+const FOLDER_ID = '1m2ai8r8v_rtgpsPYER4rzKJN0_7Q-lfl';
+
+
+// ============================================================
+// 1. MENU KHI MỞ GOOGLE SHEET
+// ============================================================
+
+function onOpen() {
+
+  var ui = SpreadsheetApp.getUi();
+
+  ui.createMenu('🛠️ Tạo Báo Cáo')
+
+    .addItem(
+      '🖱️ Tạo báo cáo ngay',
+      'runReportsManually'
+    )
+
+    .addSeparator()
+
+    .addItem(
+      '⏰ Chạy kiểm tra tự động',
+      'runReportsAutomatically'
+    )
+
+    .addToUi();
+}
+
+
+// ============================================================
+// 2. CHẠY THỦ CÔNG
+// ============================================================
+
+function runReportsManually() {
+
+  var result = autoGenerateReports(true);
+
+  var ui = SpreadsheetApp.getUi();
+
+  if (result.totalReportsCreated > 0) {
+
+    ui.alert(
+      '✅ Hoàn tất!\n\n' +
+      'Đã quét toàn bộ các tab học sinh.\n\n' +
+      'Số học sinh có báo cáo mới: ' +
+      result.studentsProcessed +
+      '\n' +
+      'Tổng số báo cáo đã tạo: ' +
+      result.totalReportsCreated
+    );
+
+  } else {
+
+    ui.alert(
+      'ℹ️ Không có báo cáo mới.\n\n' +
+      'Các buổi "Đã học" hiện tại đều đã có link báo cáo.'
+    );
+
+  }
+}
+
+
+// ============================================================
+// 3. CHẠY TỰ ĐỘNG BẰNG TIME-DRIVEN TRIGGER
+// ============================================================
+
+function runReportsAutomatically() {
+
+  var result = autoGenerateReports(false);
+
+  console.log(
+    'VYS Auto Report hoàn tất.\n' +
+    'Học sinh có báo cáo mới: ' +
+    result.studentsProcessed +
+    '\n' +
+    'Tổng báo cáo tạo: ' +
+    result.totalReportsCreated
+  );
+}
+
+
+// ============================================================
+// 4. CHUẨN HÓA TÊN
+// ============================================================
+
+function normalizeName(str) {
+
+  if (!str) return "";
+
+  return str.toString()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/đ/g, "d")
+    .trim();
+}
+
+
+// ============================================================
+// 5. LẤY ID GOOGLE SHEET TỪ URL
+// ============================================================
+
+function extractIdFromUrl(url) {
+
+  if (!url) return null;
+
+  var match =
+    url.toString().match(
+      /(?:\/d\/|[?&]id=)([a-zA-Z0-9-_]+)/
+    );
+
+  return match ? match[1] : null;
+}
+
+
+// ============================================================
+// 6. HÀM CHÍNH TẠO BÁO CÁO
+//
+// showUI = true  → chạy thủ công
+// showUI = false → chạy tự động
+// ============================================================
+
+function autoGenerateReports(showUI) {
+
+  var ss =
+    SpreadsheetApp.getActiveSpreadsheet();
+
+
+  // ==========================================================
+  // A. TÌM LINK_GAMES
+  // ==========================================================
+
+  var linkSheet =
+    ss.getSheetByName('Link_Games');
+
+  if (!linkSheet) {
+
+    if (showUI) {
+
+      SpreadsheetApp.getUi().alert(
+        '❌ Không tìm thấy tab Link_Games!'
+      );
+
+    }
+
+    return {
+      studentsProcessed: 0,
+      totalReportsCreated: 0
+    };
+  }
+
+
+  // ==========================================================
+  // B. ĐỌC TOÀN BỘ LINK GAME
+  // ==========================================================
+
+  var lastLinkRow =
+    linkSheet.getLastRow();
+
+  var allGamesData = [];
+
+
+  if (lastLinkRow >= 2) {
+
+    var linkData =
+      linkSheet
+        .getRange(
+          2,
+          1,
+          lastLinkRow - 1,
+          1
+        )
+        .getValues();
+
+
+    // ========================================================
+    // C. QUÉT TẤT CẢ FILE GAME
+    // ========================================================
+
+    for (
+      var k = 0;
+      k < linkData.length;
+      k++
+    ) {
+
+      var url =
+        linkData[k][0];
+
+      if (!url) continue;
+
+
+      var sheetId =
+        extractIdFromUrl(url);
+
+      if (!sheetId) continue;
+
+
+      try {
+
+        var gameSs =
+          SpreadsheetApp.openById(sheetId);
+
+
+        // Ưu tiên Scores
+        // Nếu không có thì dùng Báo cáo điểm
+
+        var gameSheet =
+          gameSs.getSheetByName('Scores') ||
+          gameSs.getSheetByName('Báo cáo điểm');
+
+
+        if (!gameSheet) continue;
+
+
+        var data =
+          gameSheet
+            .getDataRange()
+            .getDisplayValues();
+
+
+        // Bỏ dòng tiêu đề
+
+        for (
+          var d = 1;
+          d < data.length;
+          d++
+        ) {
+
+          allGamesData.push(
+            data[d]
+          );
+
+        }
+
+
+      } catch (e) {
+
+        console.log(
+          '⚠️ Không đọc được game:\n' +
+          url +
+          '\nLỗi: ' +
+          e.message
+        );
+
+      }
+
+    }
+
+  }
+
+
+  // ==========================================================
+  // D. LẤY TẤT CẢ TAB TRONG FILE
+  // ==========================================================
+
+  var sheets =
+    ss.getSheets();
+
+
+  // ==========================================================
+  // E. DANH SÁCH TAB KHÔNG PHẢI HỌC SINH
+  // ==========================================================
+
+  var ignoredSheets = [
+
+    'Link_Games'
+
+    // Nếu sau này có thêm tab hệ thống,
+    // thêm vào đây.
+    //
+    // 'Settings',
+    // 'Dashboard',
+    // 'Template',
+    // 'Scores'
+
+  ];
+
+
+  var totalReportsCreated = 0;
+
+  var studentsProcessed = 0;
+
+
+  // ==========================================================
+  // F. QUÉT TỪNG TAB
+  // ==========================================================
+
+  for (
+    var s = 0;
+    s < sheets.length;
+    s++
+  ) {
+
+    var sheet =
+      sheets[s];
+
+    var targetName =
+      sheet.getName().trim();
+
+
+    // --------------------------------------------------------
+    // BỎ QUA TAB HỆ THỐNG
+    // --------------------------------------------------------
+
+    if (
+      ignoredSheets.includes(
+        targetName
+      )
+    ) {
+
+      continue;
+
+    }
+
+
+    // --------------------------------------------------------
+    // BỎ QUA TAB KHÔNG CÓ DỮ LIỆU
+    // --------------------------------------------------------
+
+    if (
+      sheet.getLastRow() < 2
+    ) {
+
+      continue;
+
+    }
+
+
+    // ========================================================
+    // G. CHUẨN HÓA TÊN HỌC SINH
+    // ========================================================
+
+    var normalizedTargetName =
+      normalizeName(
+        targetName
+      );
+
+
+    var nameParts =
+      normalizedTargetName.split(
+        " "
+      );
+
+
+    var lastWord =
+      nameParts[
+        nameParts.length - 1
+      ];
+
+
+    // ========================================================
+    // H. ĐỌC TRACKER CỦA HỌC SINH
+    // ========================================================
+
+    var trackerData =
+      sheet
+        .getDataRange()
+        .getDisplayValues();
+
+
+    var reportsCreatedForStudent = 0;
+
+
+    // ========================================================
+    // I. QUÉT TỪNG BUỔI HỌC
+    // ========================================================
+
+    for (
+      var i = 1;
+      i < trackerData.length;
+      i++
+    ) {
+
+
+      // ------------------------------------------------------
+      // Cột F = Trạng thái
+      // ------------------------------------------------------
+
+      var trangThai =
+        trackerData[i][5]
+          ? trackerData[i][5].trim()
+          : "";
+
+
+      // ------------------------------------------------------
+      // Cột I = Báo cáo
+      // ------------------------------------------------------
+
+      var baoCao =
+        trackerData[i][8]
+          ? trackerData[i][8].trim()
+          : "";
+
+
+      // ------------------------------------------------------
+      // CHỈ XỬ LÝ:
+      //
+      // Trạng thái = Đã học
+      // VÀ
+      // Chưa có báo cáo
+      // ------------------------------------------------------
+
+      if (
+        trangThai !== "Đã học" ||
+        baoCao !== ""
+      ) {
+
+        continue;
+
+      }
+
+
+      // ======================================================
+      // J. LẤY THÔNG TIN BUỔI HỌC
+      // ======================================================
+
+      var targetDate =
+        trackerData[i][2]
+          ? trackerData[i][2].trim()
+          : "";
+
+
+      var mucTieu =
+        trackerData[i][4] || "";
+
+
+      var rowToUpdate =
+        i + 1;
+
+
+      var tableData = [];
+
+
+      // ======================================================
+      // K. TÌM ĐIỂM GAME CỦA HỌC SINH
+      // ======================================================
+
+      for (
+        var j = 0;
+        j < allGamesData.length;
+        j++
+      ) {
+
+        var rowData =
+          allGamesData[j];
+
+
+        // ----------------------------------------------------
+        // Cột A = Timestamp
+        // ----------------------------------------------------
+
+        var timestamp =
+          rowData[0]
+            ? rowData[0].trim()
+            : "";
+
+
+        // ----------------------------------------------------
+        // Cột B = Tên học sinh
+        // ----------------------------------------------------
+
+        var shadowStudentName =
+          normalizeName(
+            rowData[1]
+          );
+
+
+        // ----------------------------------------------------
+        // MATCH TÊN
+        // ----------------------------------------------------
+
+        var isNameMatch =
+
+          (
+            shadowStudentName ===
+            normalizedTargetName
+          )
+
+          ||
+
+          (
+            shadowStudentName ===
+            lastWord
+          )
+
+          ||
+
+          (
+            shadowStudentName.length > 1 &&
+            normalizedTargetName.includes(
+              shadowStudentName
+            )
+          );
+
+
+        // ----------------------------------------------------
+        // MATCH NGÀY + TÊN
+        // ----------------------------------------------------
+
+        if (
+          timestamp.includes(
+            targetDate
+          ) &&
+          isNameMatch
+        ) {
+
+
+          // ================================================
+          // ĐIỂM
+          // ================================================
+
+          var diemDat =
+            parseFloat(
+              rowData[4]
+            ) || 0;
+
+
+          var tongDiem =
+            parseFloat(
+              rowData[5]
+            ) || 0;
+
+
+          var trungBinh =
+
+            tongDiem > 0
+
+              ?
+
+              Math.round(
+                (
+                  diemDat /
+                  tongDiem
+                ) * 100
+              ) + "%"
+
+              :
+
+              "0%";
+
+
+          // ================================================
+          // THÊM VÀO BẢNG BÁO CÁO
+          // ================================================
+
+          tableData.push([
+
+            timestamp,
+
+            rowData[1]
+              ? rowData[1].trim()
+              : "",
+
+            rowData[2]
+              ? rowData[2].trim()
+              : "",
+
+            rowData[3]
+              ? rowData[3].trim()
+              : "",
+
+            rowData[4]
+              ? rowData[4].trim()
+              : "",
+
+            rowData[5]
+              ? rowData[5].trim()
+              : "",
+
+            trungBinh
+
+          ]);
+
+        }
+
+      }
+
+
+      // ======================================================
+      // L. TẠO GOOGLE DOC
+      // ======================================================
+
+      var safeDate =
+        targetDate.replace(
+          /\//g,
+          "-"
+        );
+
+
+      var docName =
+        safeDate +
+        " - Báo cáo " +
+        targetName;
+
+
+      var doc =
+        DocumentApp.create(
+          docName
+        );
+
+
+      var docFile =
+        DriveApp.getFileById(
+          doc.getId()
+        );
+
+
+      // ======================================================
+      // M. ĐƯA DOC VÀO FOLDER
+      // ======================================================
+
+      var folder =
+        DriveApp.getFolderById(
+          FOLDER_ID
+        );
+
+
+      folder.addFile(
+        docFile
+      );
+
+
+      try {
+
+        DriveApp
+          .getRootFolder()
+          .removeFile(
+            docFile
+          );
+
+      } catch (e) {
+
+        console.log(
+          'Không thể xóa file khỏi My Drive root: ' +
+          e.message
+        );
+
+      }
+
+
+      var docUrl =
+        doc.getUrl();
+
+
+      // ======================================================
+      // N. VIẾT NỘI DUNG BÁO CÁO
+      // ======================================================
+
+      var body =
+        doc.getBody();
+
+
+      body.clear();
+
+
+      body
+        .appendParagraph(
+          "BÁO CÁO KẾT QUẢ BUỔI HỌC"
+        )
+        .setHeading(
+          DocumentApp
+            .ParagraphHeading
+            .NORMAL
+        );
+
+
+      body.appendParagraph(
+
+        "Ngày " +
+        targetDate +
+        " của học sinh " +
+        targetName +
+        "\n"
+
+      );
+
+
+      body.appendParagraph(
+        "Mục tiêu buổi học"
+      );
+
+
+      body.appendParagraph(
+        mucTieu + "\n"
+      );
+
+
+      body.appendParagraph(
+        "Kết quả bài tập trong buổi học"
+      );
+
+
+      // ======================================================
+      // O. THÊM BẢNG ĐIỂM
+      // ======================================================
+
+      if (
+        tableData.length > 0
+      ) {
+
+
+        tableData.unshift([
+
+          "Thời gian",
+          "Học sinh",
+          "Tên bài học",
+          "Loại bài tập",
+          "Điểm đạt",
+          "Tổng điểm",
+          "Trung bình (%)"
+
+        ]);
+
+
+        body.appendTable(
+          tableData
+        );
+
+
+      } else {
+
+
+        body.appendParagraph(
+
+          "(Học sinh chưa làm bài tập " +
+          "trên hệ thống trong ngày này)"
+
+        );
+
+      }
+
+
+      // ======================================================
+      // P. LƯU DOC
+      // ======================================================
+
+      doc.saveAndClose();
+
+
+      // ======================================================
+      // Q. GHI LINK VÀO CỘT I
+      // ======================================================
+
+      sheet
+        .getRange(
+          rowToUpdate,
+          9
+        )
+        .setValue(
+          docUrl
+        );
+
+
+      reportsCreatedForStudent++;
+
+      totalReportsCreated++;
+
+
+    } // END LOOP BUỔI HỌC
+
+
+    // ========================================================
+    // R. GHI NHẬN HỌC SINH CÓ BÁO CÁO
+    // ========================================================
+
+    if (
+      reportsCreatedForStudent > 0
+    ) {
+
+      studentsProcessed++;
+
+
+      console.log(
+
+        targetName +
+        ": tạo " +
+        reportsCreatedForStudent +
+        " báo cáo."
+
+      );
+
+    }
+
+
+  } // END LOOP SHEETS
+
+
+  // ==========================================================
+  // S. TRẢ KẾT QUẢ
+  // ==========================================================
+
+  return {
+
+    studentsProcessed:
+      studentsProcessed,
+
+    totalReportsCreated:
+      totalReportsCreated
+
+  };
+
+}
+
+// ============================================================
+// 7. WEB APP ROUTER
+// ?unit_id=unit_3   -> exercise list HTML
+// ?student=NAME     -> latest session report JSON
+// ============================================================
+
+function doGet(e) {
+  var params = e && e.parameter ? e.parameter : {};
+  var unitId = params.unit_id || '';
+  var studentName = params.student || '';
+  var format = params.format || '';
+
+  // Dashboard learning path: ?format=units&sheet=8.5%20-%209.0%20IELTS
+  if (format === 'units') return getUnitSheetResponse_(params.sheet || '');
+
+  // Keep the existing exercise list route.
+  if (unitId) {
+    var template = HtmlService.createTemplateFromFile('ExerciseList');
+    template.currentUnitId = unitId;
+    return template.evaluate()
+      .setTitle('Danh sách bài tập')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  }
+
+  if (studentName && format === 'report') {
+    var reportResult;
+    try {
+      reportResult = getLatestReportForStudent(studentName);
+    } catch (error) {
+      reportResult = {
+        ok: false,
+        error: error && error.message ? error.message : String(error)
+      };
+    }
+    return ContentService.createTextOutput(JSON.stringify(reportResult))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  if (studentName && format === 'calendar') return getCalendarResponse_(e);
+  if (studentName && (format === 'json' || format === 'score')) return getStudentScoreResponse_(e);
+  // Preserve the existing score detail page when a student link has no format.
+  if (studentName) return getStudentScoreResponse_(e);
+
+  return HtmlService.createHtmlOutput('<h1>Vui lòng chọn một Unit từ Dashboard.</h1>');
+}
+
+
+// Used by ExerciseList.html to load sections for the selected unit.
+function getExercisesForUnit(unitId) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Unit_Sections');
+  if (!sheet) return [];
+
+  var data = sheet.getDataRange().getValues();
+  var exercises = [];
+
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0] === unitId) {
+      exercises.push({
+        title: data[i][1],
+        link: data[i][2]
+      });
+    }
+  }
+
+  return exercises;
+}
+
+function getLatestReportForStudent(studentName) {
+  if (!studentName) {
+    return { ok: false, error: 'Missing student parameter.' };
+  }
+
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var studentKey = normalizeName(studentName);
+  var studentSheet = null;
+  var sheets = ss.getSheets();
+
+  for (var s = 0; s < sheets.length; s++) {
+    if (normalizeName(sheets[s].getName()) === studentKey) {
+      studentSheet = sheets[s];
+      break;
+    }
+  }
+
+  if (!studentSheet || studentSheet.getLastRow() < 2) {
+    return { ok: true, student: studentName, report: null };
+  }
+
+  var trackerData = studentSheet.getDataRange().getDisplayValues();
+  var latest = null;
+
+  // Find the most recent completed session that already has a Docs report.
+  for (var i = trackerData.length - 1; i >= 1; i--) {
+    var status = trackerData[i][5] ? trackerData[i][5].trim() : '';
+    var reportUrl = trackerData[i][8] ? trackerData[i][8].trim() : '';
+    if (status === 'Đã học' && reportUrl) {
+      latest = {
+        date: trackerData[i][2] ? trackerData[i][2].trim() : '',
+        objective: trackerData[i][4] || '',
+        reportUrl: reportUrl
+      };
+      break;
+    }
+  }
+
+  if (!latest) {
+    return { ok: true, student: studentSheet.getName(), report: null };
+  }
+
+  var production = getProductionFromReport_(latest.reportUrl);
+
+  var linkSheet = ss.getSheetByName('Link_Games');
+  var allGamesData = [];
+
+  if (linkSheet && linkSheet.getLastRow() >= 2) {
+    var linkData = linkSheet.getRange(2, 1, linkSheet.getLastRow() - 1, 1).getDisplayValues();
+
+    for (var k = 0; k < linkData.length; k++) {
+      var gameUrl = linkData[k][0];
+      var gameId = extractIdFromUrl(gameUrl);
+      if (!gameId) continue;
+
+      try {
+        var gameSs = SpreadsheetApp.openById(gameId);
+        var gameSheet = gameSs.getSheetByName('Scores') || gameSs.getSheetByName('Báo cáo điểm');
+        if (!gameSheet) continue;
+
+        var gameData = gameSheet.getDataRange().getDisplayValues();
+        for (var d = 1; d < gameData.length; d++) {
+          allGamesData.push(gameData[d]);
+        }
+      } catch (error) {
+        console.log('Could not read game sheet: ' + gameUrl + ' / ' + error.message);
+      }
+    }
+  }
+
+  var normalizedStudent = normalizeName(studentSheet.getName());
+  var nameParts = normalizedStudent.split(' ');
+  var lastWord = nameParts[nameParts.length - 1];
+  var rows = [];
+
+  for (var j = 0; j < allGamesData.length; j++) {
+    var row = allGamesData[j];
+    var timestamp = row[0] ? row[0].trim() : '';
+    var gameStudent = normalizeName(row[1] || '');
+    var nameMatches = gameStudent === normalizedStudent ||
+      gameStudent === lastWord ||
+      (gameStudent.length > 1 && normalizedStudent.indexOf(gameStudent) !== -1);
+
+    if (!timestamp.includes(latest.date) || !nameMatches) continue;
+
+    var score = row[4] ? row[4].trim() : '';
+    var total = row[5] ? row[5].trim() : '';
+    var scoreNumber = parseFloat(score) || 0;
+    var totalNumber = parseFloat(total) || 0;
+
+    rows.push({
+      time: timestamp,
+      student: row[1] ? row[1].trim() : '',
+      lesson: row[2] ? row[2].trim() : '',
+      exerciseType: row[3] ? row[3].trim() : '',
+      score: score,
+      totalScore: total,
+      average: totalNumber > 0 ? Math.round(scoreNumber / totalNumber * 100) + '%' : '0%'
+    });
+  }
+
+  return {
+    ok: true,
+    student: studentSheet.getName(),
+    report: {
+      date: latest.date,
+      objective: latest.objective,
+      reportUrl: latest.reportUrl,
+      production: production,
+      columns: ['Thời gian', 'Học sinh', 'Tên bài học', 'Loại bài tập', 'Điểm đạt', 'Tổng điểm', 'Trung bình (%)'],
+      rows: rows
+    }
+  };
+}
+
+// Read the Production prompt and student's response from the linked Google Doc.
+function getProductionFromReport_(reportUrl) {
+  try {
+    var documentId = extractIdFromUrl(reportUrl);
+    if (!documentId) return null;
+
+    var lines = DocumentApp.openById(documentId).getBody().getText().split(/\r?\n/);
+    var start = -1;
+    for (var i = 0; i < lines.length; i++) {
+      if (/production|sản phẩm vận dụng sau khi học/i.test(lines[i])) {
+        start = i + 1;
+        break;
+      }
+    }
+    if (start < 0) return null;
+
+    var prompt = [];
+    var answer = [];
+    var current = '';
+    for (var j = start; j < lines.length; j++) {
+      var line = lines[j].trim();
+      if (/^(đề bài|prompt)\s*:/i.test(line)) {
+        current = 'prompt';
+        line = line.replace(/^(đề bài|prompt)\s*:\s*/i, '');
+      } else if (/^(bài làm học sinh|bài làm|student(?:'s)? work)\s*:/i.test(line)) {
+        current = 'answer';
+        line = line.replace(/^(bài làm học sinh|bài làm|student(?:'s)? work)\s*:\s*/i, '');
+      }
+
+      if (!line) continue;
+      if (current === 'prompt') prompt.push(line);
+      else if (current === 'answer') answer.push(line);
+    }
+
+    if (!prompt.length && !answer.length) return null;
+    return { prompt: prompt.join('\n'), answer: answer.join('\n') };
+  } catch (error) {
+    console.log('Could not read Production from report: ' + error.message);
+    return null;
+  }
+}
+
+
+// ============================================================
+// Student score route, adapted from GAS-score.txt
+// ============================================================
+function getStudentScoreResponse_(e) {
+  var studentName = e.parameter.student; 
+  var format = e.parameter.format;
+  
+  if (!studentName) {
+    return HtmlService.createHtmlOutput("<h3 style='text-align:center; font-family:sans-serif; color: #fff;'>Vui lòng nhập tên học sinh vào link!</h3>");
+  }
+
+  // Kết nối thẳng vào file Sheet hiện tại đang chứa code
+  var ss = SpreadsheetApp.openById("1PprVNjzWKQRN-u2Ix_aLQjlYyXsPgpJs4QniLNL690E");
+  var sheet = ss.getSheetByName(studentName);
+
+  if (!sheet) {
+    return HtmlService.createHtmlOutput("<h3 style='text-align:center; font-family:sans-serif; color: #fff;'>Không tìm thấy dữ liệu của học sinh này.</h3>");
+  }
+
+  // Lấy dữ liệu tổng quan ở hàng số 2
+  var summaryData = sheet.getRange("B2:D2").getValues()[0];
+  var totalCount = summaryData[0] || 0;     // Ô B2: Tổng số bài
+  var avgScore = summaryData[1] || 0;       // Ô C2: Điểm trung bình
+  var completedCount = summaryData[2] || 0; // Ô D2: Bài hoàn thành
+
+  // ============================================================
+  // BLOCK JSON CHO TRANG DASHBOARD
+  // ============================================================
+  if (format === 'json') {
+    var jsonData = JSON.stringify({
+      total: totalCount,
+      completed: completedCount,
+      average: (Math.round(avgScore * 10) / 10).toFixed(1), // Làm tròn 1 chữ số thập phân (vd: 9.2)
+      latestImage: "https://ui-avatars.com/api/?name=" + encodeURIComponent(studentName) + "&background=1abc9c&color=fff&size=800"
+    });
+
+    var output = ContentService.createTextOutput(jsonData);
+    output.setMimeType(ContentService.MimeType.JSON);
+    return output;
+  }
+
+  // ============================================================
+  // BLOCK HTML GIAO DIỆN HIỂN THỊ DANH SÁCH BÀI TẬP (DARK MODE)
+  // ============================================================
+  
+  // Lấy danh sách bài tập từ dòng 3 trở xuống (B, C, D, E)
+  var lastRow = sheet.getLastRow();
+  var data = (lastRow >= 3) ? sheet.getRange("B3:E" + lastRow).getValues() : [];
+
+  var htmlOutput = `
+    <style>
+      body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        margin: 0; 
+        padding: 20px; 
+        background: #121212; 
+      }
+      .container { 
+        display: flex; 
+        flex-wrap: wrap; 
+        gap: 20px; 
+        justify-content: center;
+      }
+      .card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+      .card { 
+        width: 280px; 
+        border-radius: 16px; 
+        box-shadow: 0 8px 24px rgba(0,0,0,0.4); 
+        background: #1e1e1e; 
+        overflow: hidden; 
+        border: 1px solid #2a2a2a;
+        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card:hover { 
+        transform: translateY(-6px); 
+        border-color: #3b82f6;
+        box-shadow: 0 12px 28px rgba(59, 130, 246, 0.2); 
+      }
+      /* Khu vực cover tự động tạo màu gradient */
+      .cover { 
+        width: 100%; 
+        height: 140px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        color: white; 
+        font-size: 20px; 
+        font-weight: 800; 
+        text-align: center; 
+        padding: 15px; 
+        box-sizing: border-box;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+        line-height: 1.3;
+      }
+      .card-body { 
+        padding: 20px; 
+        text-align: center; 
+      }
+      .title { 
+        font-size: 15px; 
+        font-weight: 700; 
+        color: #f3f4f6; 
+        margin-bottom: 8px; 
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .score {
+        font-size: 14px;
+        color: #9ca3af;
+        margin-bottom: 15px;
+      }
+      .score strong { color: #f87171; font-size: 17px; }
+      
+      /* Tag trạng thái */
+      .status { 
+        display: inline-block; 
+        padding: 6px 16px; 
+        border-radius: 50px; 
+        font-size: 13px; 
+        font-weight: 600;
+      }
+      .status.done { background: rgba(26, 188, 156, 0.15); color: #2ecc71; }
+      .status.pending { background: rgba(230, 126, 34, 0.15); color: #fb923c; }
+    </style>
+    <div class="container">
+  `;
+  
+  // Bộ sưu tập màu sắc Gradient hiện đại và dịu mắt trên nền tối
+  var gradients = [
+    "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+    "linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)",
+    "linear-gradient(135deg, #d97706 0%, #dc2626 100%)",
+    "linear-gradient(135deg, #059669 0%, #0d9488 100%)",
+    "linear-gradient(135deg, #db2777 0%, #9333ea 100%)"
+  ];
+
+  for (var i = 0; i < data.length; i++) {
+    var lessonName = data[i][0];
+    
+    if (lessonName !== "") { 
+      var score = data[i][1];
+      var status = data[i][2];
+      var lessonLink = data[i][3] || "#"; // Cột E (index 3) chứa link bài học
+      
+      // Tự động chọn 1 màu gradient theo thứ tự
+      var colorIndex = i % gradients.length;
+      var bg = gradients[colorIndex];
+      
+      var statusClass = (status === "Hoàn thành") ? "done" : "pending";
+      var displayScore = (score !== "") ? (Math.round(score * 10) / 10) : "Đang chờ";
+
+      htmlOutput += `
+        <a href="${lessonLink}" target="_blank" class="card-link">
+          <div class="card">
+            <div class="cover" style="background: ${bg}">
+              ${lessonName}
+            </div>
+            <div class="card-body">
+              <div class="title" title="${lessonName}">${lessonName}</div>
+              <div class="score">Điểm: <strong>${displayScore}</strong></div>
+              <div class="status ${statusClass}">${status}</div>
+            </div>
+          </div>
+        </a>
+      `;
+    }
+  }
+  
+  htmlOutput += "</div>";
+  return HtmlService.createHtmlOutput(htmlOutput);
+}
+
+// ============================================================
+// Calendar route, adapted from GAS-calendar.txt
+// ============================================================
+const SPREADSHEET_ID = '13vj67IfJMuMEVeCI7Dj7DY5Eaf2rGkAay59fY3JhoHo';
+
+function getUnitSheetResponse_(sheetName) {
+  var name = String(sheetName || '').trim();
+  if (!name) return jsonResponse({ ok: false, message: 'Thiếu tên sheet Unit.' });
+
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = spreadsheet.getSheetByName(name);
+  if (!sheet) {
+    return jsonResponse({ ok: false, message: 'Không tìm thấy sheet: ' + name });
+  }
+
+  var values = sheet.getDataRange().getDisplayValues();
+  if (!values.length) return jsonResponse({ ok: true, units: [] });
+
+  var headers = values[0].map(function (value) {
+    return String(value || '').trim().toLowerCase().replace(/[:：]$/g, '').replace(/\s+/g, '_');
+  });
+  var columns = {};
+  headers.forEach(function (header, index) { columns[header] = index; });
+
+  function cell(row, key) {
+    var index = columns[key];
+    return index === undefined ? '' : row[index];
+  }
+
+  var units = [];
+  for (var i = 1; i < values.length; i++) {
+    var row = values[i];
+    if (!cell(row, 'unit_id') && !cell(row, 'unit_number')) continue;
+    units.push({
+      unit_id: cell(row, 'unit_id'),
+      unit_number: cell(row, 'unit_number'),
+      title: cell(row, 'title'),
+      subtitle: cell(row, 'subtitle'),
+      start_date: cell(row, 'start_date'),
+      end_date: cell(row, 'end_date'),
+      vocabulary_count: cell(row, 'từ_vựng') || cell(row, 'vocabulary_count'),
+      grammar: cell(row, 'ngữ_pháp') || cell(row, 'grammar'),
+      pronunciation: cell(row, 'phát_âm') || cell(row, 'pronunciation'),
+      status: cell(row, 'status'),
+      unit_link: cell(row, 'unit_link')
+    });
+  }
+
+  return jsonResponse({ ok: true, sheet: name, units: units });
+}
+
+function getCalendarResponse_(e) {
+  const student = (e.parameter.student || '').trim();
+
+  if (!student) {
+    return jsonResponse({
+      ok: false,
+      error: 'Thiếu tham số student.'
+    });
+  }
+
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = findStudentSheet_(spreadsheet, student);
+
+  if (!sheet) {
+    return jsonResponse({
+      ok: false,
+      error: `Không tìm thấy tab của học viên: ${student}`
+    });
+  }
+
+  const values = sheet.getDataRange().getValues();
+
+  if (values.length < 2) {
+    return jsonResponse({
+      ok: false,
+      error: `Tab ${sheet.getName()} chưa có lịch học.`
+    });
+  }
+
+  // Các cột trong Sheet:
+  // A Mã Học Viên | B STT Buổi | C Ngày Học | D Giờ Học
+  // E Mục Tiêu | F Trạng Thái | G Mã Unit
+  const now = new Date();
+  const lessons = [];
+
+  for (let i = 1; i < values.length; i++) {
+    const row = values[i];
+
+    const studentId = row[0];
+    const lessonNumber = row[1];
+    const lessonDate = row[2];
+    const lessonTime = row[3];
+    const objective = row[4];
+    const status = row[5];
+    const unitCode = row[6];
+
+    if (!studentId || !lessonDate || !lessonTime) continue;
+
+    const lessonDateTime = combineDateAndTime_(lessonDate, lessonTime);
+    if (!lessonDateTime) continue;
+
+    const normalizedStatus = normalize_(status);
+
+    // Bỏ qua các buổi đã hoàn thành / đã học.
+    const isCompleted =
+      normalizedStatus.includes('da hoc') ||
+      normalizedStatus.includes('hoan thanh');
+
+    if (isCompleted) continue;
+
+    lessons.push({
+      sequence: lessonNumber || null,
+      dateTime: lessonDateTime,
+      date: formatDate_(lessonDateTime),
+      time: formatTime_(lessonDateTime),
+      unitCode: unitCode ? String(unitCode) : '',
+      unitName: unitCode ? `Unit ${unitCode}` : 'Chưa cập nhật Unit',
+      objective: objective ? String(objective) : 'Chưa cập nhật mục tiêu buổi học',
+      status: status ? String(status) : ''
+    });
+  }
+
+  lessons.sort((a, b) => a.dateTime.getTime() - b.dateTime.getTime());
+
+  // Ưu tiên buổi chưa học sắp diễn ra; nếu lịch cũ chưa cập nhật,
+  // vẫn trả về buổi chưa học đầu tiên để giáo viên nhận biết.
+  const nextLesson =
+    lessons.find(lesson => lesson.dateTime >= now) || lessons[0];
+
+  if (!nextLesson) {
+    return jsonResponse({
+      ok: true,
+      student: student,
+      sheet: sheet.getName(),
+      lesson: null,
+      message: 'Không có buổi học chưa hoàn thành.'
+    });
+  }
+
+  return jsonResponse({
+    ok: true,
+    student: student,
+    sheet: sheet.getName(),
+    lesson: {
+      sequence: nextLesson.sequence,
+      date: nextLesson.date,
+      time: nextLesson.time,
+      unitCode: nextLesson.unitCode,
+      unitName: nextLesson.unitName,
+      objective: nextLesson.objective,
+      status: nextLesson.status
+    }
+  });
+}
+
+function findStudentSheet_(spreadsheet, studentName) {
+  const target = normalize_(studentName);
+
+  return spreadsheet.getSheets().find(sheet =>
+    normalize_(sheet.getName()) === target
+  );
+}
+
+function combineDateAndTime_(dateValue, timeValue) {
+  let date;
+
+  if (dateValue instanceof Date) {
+    date = new Date(dateValue);
+  } else {
+    const match = String(dateValue).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (!match) return null;
+    date = new Date(Number(match[3]), Number(match[2]) - 1, Number(match[1]));
+  }
+
+  let hours = 0;
+  let minutes = 0;
+
+  if (timeValue instanceof Date) {
+    hours = timeValue.getHours();
+    minutes = timeValue.getMinutes();
+  } else {
+    const match = String(timeValue).match(/^(\d{1,2}):(\d{2})/);
+    if (!match) return null;
+    hours = Number(match[1]);
+    minutes = Number(match[2]);
+  }
+
+  date.setHours(hours, minutes, 0, 0);
+  return date;
+}
+
+function formatDate_(date) {
+  return Utilities.formatDate(
+    date,
+    Session.getScriptTimeZone(),
+    'dd/MM/yyyy'
+  );
+}
+
+function formatTime_(date) {
+  return Utilities.formatDate(
+    date,
+    Session.getScriptTimeZone(),
+    'HH:mm'
+  );
+}
+
+function normalize_(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .trim()
+    .toLowerCase();
+}
+
+function jsonResponse(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}

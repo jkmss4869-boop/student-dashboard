@@ -519,11 +519,139 @@
 
     .vys-progress-title {
 
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
       margin: 0;
-
+      padding: 0;
+      border: 0;
+      color: inherit;
+      background: transparent;
+      font: inherit;
       font-size: 22px;
-
       letter-spacing: -.02em;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .vys-progress-title:hover,
+    .vys-progress-title:focus-visible {
+      color: var(--accent);
+    }
+
+    .vys-progress-title:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 5px;
+      border-radius: 3px;
+    }
+
+    .vys-progress-toggle-icon {
+      font-size: 15px;
+      transition: transform .2s ease;
+    }
+
+    .vys-progress-title[aria-expanded="true"] .vys-progress-toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    .vys-journey-view {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity .45s ease, visibility .45s ease;
+    }
+
+    .vys-study-time-screen {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 28px;
+      border-radius: inherit;
+      text-align: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(.97);
+      transition: opacity .5s ease, visibility .5s ease, transform .5s ease;
+    }
+
+    .vys-study-time-screen-label {
+      color: #71e6ff;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .vys-study-time-total {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 8px;
+      max-width: 100%;
+    }
+
+    .vys-study-time-value {
+      max-width: 100%;
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(40px, 4.2vw, 56px);
+      font-weight: 800;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+      text-shadow: 0 0 22px rgba(113, 230, 255, .55);
+    }
+
+    .vys-study-time-unit {
+      color: rgba(113, 230, 255, .9);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .vys-study-time-note {
+      color: rgba(255, 255, 255, .78);
+      font-size: 12px;
+    }
+
+    .vys-progress-box {
+      cursor: pointer;
+      transition: background .55s ease, box-shadow .55s ease;
+    }
+
+    .vys-progress-box.is-study-time {
+      overflow: hidden;
+      cursor: pointer;
+      background: linear-gradient(125deg, #087fbd, #5145bf 55%, #a43a9b);
+      box-shadow: 0 0 24px rgba(113, 230, 255, .35), 0 20px 50px rgba(5, 10, 47, .42);
+    }
+
+    .vys-progress-box.is-study-time::after {
+      background: rgba(255, 255, 255, .14);
+    }
+
+    .vys-progress-box.is-study-time .vys-journey-view {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .vys-progress-box.is-study-time .vys-study-time-screen {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .vys-journey-view,
+      .vys-study-time-screen,
+      .vys-progress-box {
+        transition-duration: .01ms;
+      }
     }
 
 
@@ -1665,7 +1793,7 @@
 
     <div class="vys-grid">
 
-      <a href="https://script.google.com/macros/s/AKfycbwHZrEU54l-g-eYBqCfkuqi8YCGBa3-rSt8wAmZR5Zcvmn43N4uKfRMiWUPYj7LvMIdyw/exec?student=DEMO"
+      <a href="https://script.google.com/macros/s/AKfycbwIXDQrANtvLjdbqy6PdqUu_CVu-6NPG_EYEig0QIw0U_MXsVKOsc-rBSnIWUyn9UHzbw/exec?student=DEMO"
         target="_blank" class="vys-card vys-hw-card" id="vys-hw-card"
         style="text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 230px; padding: 28px; position: relative; overflow: hidden; border: 1px solid rgba(113, 230, 255, 0.3);">
 
@@ -1698,7 +1826,7 @@
 
       <script>
         (function () {
-          var API = 'https://script.google.com/macros/s/AKfycbwHZrEU54l-g-eYBqCfkuqi8YCGBa3-rSt8wAmZR5Zcvmn43N4uKfRMiWUPYj7LvMIdyw/exec?student=DEMO&format=json';
+          var API = 'https://script.google.com/macros/s/AKfycbwIXDQrANtvLjdbqy6PdqUu_CVu-6NPG_EYEig0QIw0U_MXsVKOsc-rBSnIWUyn9UHzbw/exec?student=DEMO&format=json';
           fetch(API)
             .then(function (r) { return r.json(); })
             .then(function (data) {
@@ -1750,7 +1878,7 @@
 
       <script>
         (function () {
-          var apiUrl = 'https://script.google.com/macros/s/AKfycbwHZrEU54l-g-eYBqCfkuqi8YCGBa3-rSt8wAmZR5Zcvmn43N4uKfRMiWUPYj7LvMIdyw/exec?student=DEMO&format=json';
+          var apiUrl = 'https://script.google.com/macros/s/AKfycbwIXDQrANtvLjdbqy6PdqUu_CVu-6NPG_EYEig0QIw0U_MXsVKOsc-rBSnIWUyn9UHzbw/exec?student=DEMO&format=json';
           fetch(apiUrl)
             .then(function (r) {
               if (!r.ok) throw new Error('Unable to load average score');
@@ -1809,7 +1937,7 @@
 
       <script>
         (function () {
-          var endpoint = 'https://script.google.com/macros/s/AKfycbxOP6LiMQeO-Jp2_HGwj4TV5I_6Q2lpx1N0Keb9e2sNEQlV9azYE_yUV8ZEFy7xnZ6Qgw/exec';
+          var endpoint = 'https://script.google.com/macros/s/AKfycbwIXDQrANtvLjdbqy6PdqUu_CVu-6NPG_EYEig0QIw0U_MXsVKOsc-rBSnIWUyn9UHzbw/exec';
           var student = 'DEMO';
           var timeEl = document.getElementById('vys-next-lesson-time');
           var dateEl = document.getElementById('vys-next-lesson-date');
@@ -1817,7 +1945,7 @@
           var unitEl = document.getElementById('vys-next-lesson-unit');
           var objectiveEl = document.getElementById('vys-next-lesson-objective');
 
-          fetch(endpoint + '?student=' + encodeURIComponent(student))
+          fetch(endpoint + '?student=' + encodeURIComponent(student) + '&format=calendar')
             .then(function (response) {
               if (!response.ok) throw new Error('Không thể tải lịch học');
               return response.json();
@@ -1847,11 +1975,14 @@
 <!-- PROGRESS -->
     <div class="vys-progress-box" id="vys-journey-progress">
 
+      <div class="vys-journey-view">
       <div class="vys-progress-top">
         <div>
-          <h3 class="vys-progress-title">
-            Your English journey
-          </h3>
+          <button class="vys-progress-title" id="vys-study-time-toggle" type="button"
+            aria-expanded="false" aria-controls="vys-study-time-screen">
+            <span>Your English journey</span>
+            <span class="vys-progress-toggle-icon" aria-hidden="true">⌄</span>
+          </button>
 
           <div class="vys-progress-text" id="vys-journey-subtitle">
             Current learning progress
@@ -1919,6 +2050,17 @@
         </div>
 
       </div>
+      </div>
+
+      <div class="vys-study-time-screen" id="vys-study-time-screen" aria-hidden="true"
+        role="button" tabindex="-1" aria-label="Total Study Time">
+        <div class="vys-study-time-screen-label">Total Study Time</div>
+        <div class="vys-study-time-total">
+          <strong class="vys-study-time-value" id="vys-study-time-value">—</strong>
+          <span class="vys-study-time-unit">H</span>
+        </div>
+        <div class="vys-study-time-note">Tổng số giờ học tích lũy</div>
+      </div>
 
     </div>
 
@@ -1958,6 +2100,53 @@
           document.getElementById(
             'vys-journey-percent'
           );
+
+        var studyTimeToggle =
+          document.getElementById('vys-study-time-toggle');
+
+        var studyTimeScreen =
+          document.getElementById('vys-study-time-screen');
+
+        var studyTimeValue =
+          document.getElementById('vys-study-time-value');
+
+
+        function toggleStudyTime(showStudyTime) {
+          journeyBox.classList.toggle('is-study-time', showStudyTime);
+          if (studyTimeToggle) {
+            studyTimeToggle.setAttribute('aria-expanded', String(showStudyTime));
+          }
+          if (studyTimeScreen) {
+            studyTimeScreen.setAttribute('aria-hidden', String(!showStudyTime));
+            studyTimeScreen.tabIndex = showStudyTime ? 0 : -1;
+          }
+        }
+
+        journeyBox.addEventListener('click', function (event) {
+          var showStudyTime =
+            !journeyBox.classList.contains('is-study-time');
+          toggleStudyTime(showStudyTime);
+
+          if (showStudyTime && studyTimeToggle && studyTimeScreen &&
+              studyTimeToggle.contains(event.target)) {
+            studyTimeScreen.focus();
+          } else if (!showStudyTime && studyTimeScreen && studyTimeToggle &&
+              studyTimeScreen.contains(event.target)) {
+            setTimeout(function () { studyTimeToggle.focus(); }, 550);
+          }
+        });
+
+        if (studyTimeScreen) {
+          studyTimeScreen.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              toggleStudyTime(false);
+              if (studyTimeToggle) {
+                setTimeout(function () { studyTimeToggle.focus(); }, 550);
+              }
+            }
+          });
+        }
 
         var subtitleEl =
           document.getElementById(
@@ -2042,6 +2231,14 @@
 
             var completedLessons =
               Number(journey.completedLessons) || 0;
+
+            if (studyTimeValue) {
+              var totalStudyHours = completedLessons * 1.5;
+              studyTimeValue.textContent =
+                Number.isInteger(totalStudyHours)
+                  ? String(totalStudyHours)
+                  : totalStudyHours.toFixed(1);
+            }
 
             var progress =
               Number(journey.progress) || 0;
@@ -2999,7 +3196,7 @@
   </section>
 
 
-  <!-- LATEST LEARNING SESSION REPORT -->
+    <!-- LATEST LEARNING SESSION REPORT -->
   <section class="vys-progress" id="vys-latest-report">
     <div class="vys-progress-header">
       <div>
@@ -3012,38 +3209,67 @@
     </div>
   </section>
   <style>
+    #vys-latest-report-content { color: rgba(255,255,255,.88); }
+    .vys-report-meta, .vys-report-table-wrap {
+      padding: 20px; border-radius: 16px; background: rgba(13,20,46,.38);
+      border: 1px solid rgba(165,230,255,.14);
+    }
+    .vys-report-meta { margin-bottom: 16px; line-height: 1.7; }
+    .vys-report-meta p { margin: 0 0 8px; }
+    .vys-report-meta p:last-child { margin-bottom: 0; }
+    .vys-report-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .vys-report-table th, .vys-report-table td {
+      padding: 12px; border-bottom: 1px solid rgba(165,230,255,.15);
+      color: #eef2ff !important; text-align: left; vertical-align: top;
+    }
+    .vys-report-table th { color: #a5e6ff; font-size: 11px; letter-spacing: .04em; }
+    .vys-report-table tr:last-child td { border-bottom: 0; }
+    .vys-report-average { color: #a5e6ff; font-weight: 700; }
+    .vys-report-table td.vys-report-average { color: #a5e6ff !important; }
+    .vys-report-production { margin-top: 16px; padding: 20px; border-radius: 16px;
+      background: rgba(13,20,46,.38); border: 1px solid rgba(165,230,255,.14); }
+    .vys-report-production h3 { margin: 0 0 14px; color: #a5e6ff; font-size: 16px; }
+    .vys-report-production p { margin: 0 0 12px; color: #eef2ff; line-height: 1.7; white-space: pre-wrap; }
+    .vys-report-production p:last-child { margin-bottom: 0; }
     .vys-latest-report-frame {
-      width: 100%;
-      height: min(78vh, 900px);
-      min-height: 620px;
-      overflow: hidden;
-      border-radius: 14px;
-      background: #171923;
+      width: 100%; height: min(78vh, 900px); min-height: 620px;
+      overflow: hidden; border-radius: 14px; background: #171923;
     }
     #vys-latest-report-doc {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      background: #171923;
-      filter: invert(.9) hue-rotate(180deg);
+      display: block; width: 100%; height: 100%; border: 0;
+      background: #171923; filter: invert(.9) hue-rotate(180deg);
     }
     @media (max-width: 760px) {
-      .vys-latest-report-frame {
-        height: 72vh;
-        min-height: 480px;
+      .vys-report-meta, .vys-report-table-wrap, .vys-report-production { padding: 15px; }
+      .vys-report-table thead { display: none; }
+      .vys-report-table, .vys-report-table tbody { display: block; }
+      .vys-report-table tr {
+        display: block; margin-bottom: 12px; padding: 8px 12px;
+        border: 1px solid rgba(165,230,255,.14); border-radius: 12px;
+        background: rgba(255,255,255,.025);
       }
+      .vys-report-table tr:last-child { margin-bottom: 0; }
+      .vys-report-table td {
+        display: flex; justify-content: space-between; gap: 12px;
+        padding: 8px 0; border-bottom: 1px solid rgba(165,230,255,.1);
+        text-align: right; overflow-wrap: anywhere;
+      }
+      .vys-report-table td::before {
+        content: attr(data-label); flex: 0 0 38%; color: #a5e6ff;
+        text-align: left; font-size: 11px; font-weight: 700;
+      }
+      .vys-report-table td:last-child { border-bottom: 0; }
+      .vys-latest-report-frame { height: 72vh; min-height: 480px; }
       #vys-latest-report-doc {
-        width: 165%;
-        height: 120vh;
-        transform: scale(.606);
-        transform-origin: top left;
+        width: 192.3%; height: 138.5vh; transform: scale(.52); transform-origin: top left;
       }
     }
   </style>
   <script>
     (function () {
-      var API = 'https://script.google.com/macros/s/AKfycbwK9_U_Juc0agUlyNAScGHG66T4zZbIumtZTH3XWpFcljMCwwKxpl-SeTE2tYckzyTH4w/exec';
+      // Add the deployed GAS-report Web App URL here after deployment.
+      var REPORT_API_URL = 'https://script.google.com/macros/s/AKfycbwIXDQrANtvLjdbqy6PdqUu_CVu-6NPG_EYEig0QIw0U_MXsVKOsc-rBSnIWUyn9UHzbw/exec';
+      var JOURNEY_API_URL = 'https://script.google.com/macros/s/AKfycbwK9_U_Juc0agUlyNAScGHG66T4zZbIumtZTH3XWpFcljMCwwKxpl-SeTE2tYckzyTH4w/exec';
       var STUDENT = 'DEMO';
       var container = document.getElementById('vys-latest-report-content');
       if (!container) return;
@@ -3055,41 +3281,97 @@
         notice.textContent = message;
         container.appendChild(notice);
       }
+      function addText(parent, tag, value, className) {
+        if (!value) return;
+        var element = document.createElement(tag);
+        if (className) element.className = className;
+        element.textContent = value;
+        parent.appendChild(element);
+        return element;
+      }
+      function documentId(url) {
+        var match = (url || '').match(/(?:\/document\/d\/|[?&]id=)([^/?#&]+)/);
+        return match ? match[1] : '';
+      }
+      function renderPreview(url) {
+        var id = documentId(url);
+        if (!id) { showMessage('Không nhận diện được link lesson report.'); return; }
+        var frame = document.createElement('iframe');
+        frame.id = 'vys-latest-report-doc';
+        frame.src = 'https://docs.google.com/document/d/' + encodeURIComponent(id) + '/preview';
+        frame.title = 'Latest Learning Session Report';
+        frame.loading = 'lazy';
+        var wrap = document.createElement('div');
+        wrap.className = 'vys-latest-report-frame';
+        wrap.appendChild(frame);
+        container.innerHTML = '';
+        container.appendChild(wrap);
+      }
+      function renderReport(report) {
+        if (!report) { showMessage('Lesson report chưa được cập nhật.'); return; }
+        container.innerHTML = '';
+        var meta = document.createElement('div');
+        meta.className = 'vys-report-meta';
+        addText(meta, 'p', 'Ngày: ' + (report.date || 'Chưa cập nhật'));
+        if (report.objective) addText(meta, 'p', 'Mục tiêu buổi học: ' + report.objective);
+        container.appendChild(meta);
 
-      fetch(API + '?student=' + encodeURIComponent(STUDENT))
-        .then(function (response) {
-          if (!response.ok) throw new Error('Không thể tải lesson report.');
-          return response.json();
-        })
-        .then(function (data) {
-          if (!data.ok) throw new Error(data.error || 'Không thể tải lesson report.');
-          var lessons = Array.isArray(data.lessons) ? data.lessons : [];
-          var lesson = lessons.length ? lessons[lessons.length - 1] : null;
-          if (!lesson || !lesson.reportUrl) {
-            showMessage('Lesson report chưa được cập nhật.');
-            return;
-          }
+        var panel = document.createElement('div');
+        panel.className = 'vys-report-table-wrap';
+        var table = document.createElement('table');
+        table.className = 'vys-report-table';
+        var columns = Array.isArray(report.columns) ? report.columns : [];
+        var rows = Array.isArray(report.rows) ? report.rows : [];
+        var thead = document.createElement('thead');
+        var header = document.createElement('tr');
+        columns.forEach(function (label) { addText(header, 'th', label); });
+        thead.appendChild(header);
+        table.appendChild(thead);
+        var tbody = document.createElement('tbody');
+        rows.forEach(function (row) {
+          var tr = document.createElement('tr');
+          var values = [row.time, row.student, row.lesson, row.exerciseType, row.score, row.totalScore, row.average];
+          values.forEach(function (value, index) {
+            var td = document.createElement('td');
+            td.setAttribute('data-label', columns[index] || '');
+            td.textContent = value == null ? '' : String(value);
+            if (index === 6) td.className = 'vys-report-average';
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        panel.appendChild(table);
+        if (!rows.length) addText(panel, 'p', 'Chưa có điểm bài tập trong buổi học này.');
+        container.appendChild(panel);
 
-          var documentId = lesson.reportUrl.match(/(?:\/document\/d\/|[?&]id=)([^/?#&]+)/);
-          if (!documentId) {
-            showMessage('Không nhận diện được link lesson report.');
-            return;
-          }
-
-          var frame = document.createElement('iframe');
-          frame.id = 'vys-latest-report-doc';
-          frame.src = 'https://docs.google.com/document/d/' + encodeURIComponent(documentId[1]) + '/preview';
-          frame.title = 'Latest Learning Session Report';
-          frame.loading = 'lazy';
-          var frameWrap = document.createElement('div');
-          frameWrap.className = 'vys-latest-report-frame';
-          frameWrap.appendChild(frame);
-          container.innerHTML = '';
-          container.appendChild(frameWrap);
-        })
+        if (report.production && (report.production.prompt || report.production.answer)) {
+          var production = document.createElement('section');
+          production.className = 'vys-report-production';
+          addText(production, 'h3', 'Production · Sản phẩm vận dụng sau khi học');
+          if (report.production.prompt) addText(production, 'p', 'Đề bài: ' + report.production.prompt);
+          if (report.production.answer) addText(production, 'p', 'Bài làm học sinh: ' + report.production.answer);
+          container.appendChild(production);
+        }
+      }
+      function loadPreviewFallback() {
+        fetch(JOURNEY_API_URL + '?student=' + encodeURIComponent(STUDENT))
+          .then(function (response) { if (!response.ok) throw new Error('Không thể tải report.'); return response.json(); })
+          .then(function (data) {
+            var lessons = Array.isArray(data.lessons) ? data.lessons : [];
+            var latest = lessons.length ? lessons[lessons.length - 1] : null;
+            if (latest && latest.reportUrl) renderPreview(latest.reportUrl);
+            else showMessage('Chưa có báo cáo buổi học gần nhất.');
+          })
+          .catch(function () { showMessage('Chưa thể tải báo cáo buổi học gần nhất.'); });
+      }
+      if (!REPORT_API_URL) { loadPreviewFallback(); return; }
+      fetch(REPORT_API_URL + '?student=' + encodeURIComponent(STUDENT) + '&format=report')
+        .then(function (response) { if (!response.ok) throw new Error('Không thể tải report data.'); return response.json(); })
+        .then(function (data) { if (!data.ok) throw new Error(data.error || 'Không thể tải report data.'); renderReport(data.report); })
         .catch(function (error) {
           console.error('Latest Learning Session Report:', error);
-          showMessage('Chưa thể tải báo cáo buổi học gần nhất.');
+          loadPreviewFallback();
         });
     })();
   </script>
